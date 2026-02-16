@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&family=Russo+One&family=Sora:wght@400;500;600;700&display=swap");
+
 :root {
   --brand-red: #dc2828;
   --bg-dark: #0a0a0a;
@@ -202,8 +204,15 @@ body {
   border: 1px solid var(--surface-2);
   border-radius: var(--radius-md);
   background: var(--surface-1);
-  overflow: hidden;
+  padding: 10px;
   animation: card-enter 340ms ease both;
+}
+
+.chart-frame {
+  height: 430px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .table-section {
@@ -226,6 +235,48 @@ body {
   font-size: 1rem;
 }
 
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.table-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  padding: 8px 10px;
+  min-width: 220px;
+}
+
+.table-search:focus-within {
+  border-color: var(--brand-red);
+  box-shadow: 0 0 0 2px rgba(220, 40, 40, 0.4);
+}
+
+.table-search-icon {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  letter-spacing: -0.05em;
+}
+
+.table-search input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text-main);
+  font-size: 0.88rem;
+  font-family: "Sora", sans-serif;
+}
+
+.table-search input::placeholder {
+  color: var(--text-muted);
+}
+
 .outline-button {
   border: 1px solid var(--surface-2);
   border-radius: var(--radius-sm);
@@ -241,30 +292,96 @@ body {
   background: var(--surface-2);
 }
 
-.rotmg-grid {
+.data-grid {
   height: 64vh;
   min-height: 420px;
-
-  --ag-background-color: var(--surface-1);
-  --ag-foreground-color: var(--text-main);
-  --ag-header-background-color: var(--surface-2);
-  --ag-header-foreground-color: var(--text-main);
-  --ag-border-color: var(--border-subtle);
-  --ag-row-hover-color: rgba(220, 40, 40, 0.08);
-  --ag-selected-row-background-color: rgba(220, 40, 40, 0.16);
-  --ag-header-cell-hover-background-color: rgba(220, 40, 40, 0.14);
-  --ag-font-family: "Sora", sans-serif;
-  --ag-font-size: 13px;
-  --ag-cell-horizontal-border: 1px solid rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #131313;
 }
 
-.ag-theme-alpine .ag-header-cell-label {
+.data-grid-row {
+  display: grid;
+  grid-template-columns: var(--table-columns);
+}
+
+.data-grid-header {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: var(--surface-2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.header-sort {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  color: var(--text-main);
+  font-family: "Sora", sans-serif;
+  font-size: 0.74rem;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+  cursor: pointer;
+  padding: 12px 0;
 }
 
-.ag-theme-alpine .ag-row:nth-child(even) .ag-cell {
+.sort-indicator {
+  opacity: 0;
+  color: var(--text-muted);
+  font-size: 0.66rem;
+  transition: opacity 120ms ease;
+}
+
+.header-sort:hover .sort-indicator,
+.sort-indicator.active {
+  opacity: 1;
+}
+
+.header-sort.sorted .sort-indicator {
+  color: var(--brand-red);
+}
+
+.data-grid-viewport {
+  height: calc(64vh - 46px);
+  min-height: 374px;
+  overflow: auto;
+}
+
+.data-grid-body-row.even {
   background: rgba(255, 255, 255, 0.02);
+}
+
+.data-grid-body-row:hover {
+  background: rgba(220, 40, 40, 0.09);
+}
+
+.data-grid-cell {
+  padding: 11px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.84rem;
+  color: var(--text-main);
+}
+
+.data-grid-cell.is-number {
+  text-align: right;
+}
+
+.table-date,
+.table-number {
+  font-variant-numeric: tabular-nums;
+}
+
+.table-footnote {
+  margin: 10px 2px 2px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
 }
 
 .delta-pill {
@@ -327,8 +444,26 @@ body {
     align-items: flex-start;
   }
 
-  .rotmg-grid {
+  .table-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .table-search {
+    width: 100%;
+  }
+
+  .data-grid {
+    overflow-x: auto;
+  }
+
+  .data-grid-row {
+    min-width: 910px;
+  }
+
+  .data-grid-viewport {
     height: 62vh;
-    min-height: 360px;
+    min-height: 340px;
   }
 }

@@ -12,7 +12,7 @@ type PlayerChartProps = {
   maxValues: Array<number | null>;
   range: DateRange;
   onRangeChange: (range: DateRange) => void;
-  showControls: boolean;
+  showRangeSlider: boolean;
 };
 
 function toPlotSeries(values: Array<number | null>): Array<number | null> {
@@ -26,7 +26,7 @@ export function PlayerChart({
   maxValues,
   range,
   onRangeChange,
-  showControls
+  showRangeSlider
 }: PlayerChartProps) {
   const minSeries = toPlotSeries(minValues);
   const maxSeries = toPlotSeries(maxValues);
@@ -71,7 +71,7 @@ export function PlayerChart({
     },
     paper_bgcolor: "#171717",
     plot_bgcolor: "#171717",
-    margin: { t: 52, b: 44, l: 48, r: 20 },
+    margin: { t: 56, b: 56, l: 58, r: 28 },
     hovermode: "x unified",
     hoverlabel: {
       bgcolor: "#0a0a0a",
@@ -85,25 +85,11 @@ export function PlayerChart({
       gridcolor: "rgba(255,255,255,0.02)",
       linecolor: "#262626",
       rangeslider: {
-        visible: showControls,
+        visible: showRangeSlider,
         bgcolor: "#111111",
         bordercolor: "#262626",
         thickness: 0.09
       },
-      rangeselector: showControls
-        ? {
-            bgcolor: "#111111",
-            activecolor: "#dc2828",
-            bordercolor: "#262626",
-            font: { color: "#f3f4f6" },
-            buttons: [
-              { count: 1, label: "1M", step: "month", stepmode: "backward" },
-              { count: 6, label: "6M", step: "month", stepmode: "backward" },
-              { count: 1, label: "1Y", step: "year", stepmode: "backward" },
-              { step: "all", label: "All" }
-            ]
-          }
-        : undefined,
       showspikes: true,
       spikecolor: "#f3f4f6",
       spikethickness: 1,
@@ -121,24 +107,26 @@ export function PlayerChart({
 
   return (
     <div className="chart-shell">
-      <Plot
-        data={traces}
-        layout={layout}
-        config={{
-          responsive: true,
-          displaylogo: false,
-          modeBarButtonsToRemove: ["lasso2d", "select2d", "toImage"]
-        }}
-        useResizeHandler={true}
-        style={{ width: "100%", height: "430px" }}
-        onRelayout={(event: Readonly<Record<string, unknown>>) => {
-          const start = event["xaxis.range[0]"];
-          const end = event["xaxis.range[1]"];
-          if (typeof start === "string" && typeof end === "string") {
-            onRangeChange({ start: start.slice(0, 10), end: end.slice(0, 10) });
-          }
-        }}
-      />
+      <div className="chart-frame">
+        <Plot
+          data={traces}
+          layout={layout}
+          config={{
+            responsive: true,
+            displaylogo: false,
+            modeBarButtonsToRemove: ["lasso2d", "select2d", "toImage"]
+          }}
+          useResizeHandler={true}
+          style={{ width: "100%", height: "100%" }}
+          onRelayout={(event: Readonly<Record<string, unknown>>) => {
+            const start = event["xaxis.range[0]"];
+            const end = event["xaxis.range[1]"];
+            if (typeof start === "string" && typeof end === "string") {
+              onRangeChange({ start: start.slice(0, 10), end: end.slice(0, 10) });
+            }
+          }}
+        />
+      </div>
     </div>
   );
 }

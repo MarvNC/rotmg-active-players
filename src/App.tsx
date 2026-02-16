@@ -81,7 +81,7 @@ export default function App() {
                 setPreset("ALL");
                 setRange(nextRange);
               }}
-              showControls={true}
+              showRangeSlider={true}
             />
 
             <PlayerChart
@@ -94,7 +94,7 @@ export default function App() {
                 setPreset("ALL");
                 setRange(nextRange);
               }}
-              showControls={false}
+              showRangeSlider={false}
             />
           </section>
         ) : (

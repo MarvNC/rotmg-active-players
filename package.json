@@ -11,14 +11,12 @@
     "test:watch": "vitest",
     "aggregate": "bun run scripts/aggregate.ts",
     "migrate:realmeye": "bun run scripts/migrate-realmeye.ts",
+    "migrate:realmstock": "bun run scripts/migrate-realmstock.ts",
     "scrape": "bun run scripts/scrape.ts"
   },
   "dependencies": {
-    "@fontsource/jetbrains-mono": "^5.2.6",
-    "@fontsource/russo-one": "^5.2.6",
-    "@fontsource/sora": "^5.2.6",
-    "ag-grid-community": "^33.3.2",
-    "ag-grid-react": "^33.3.2",
+    "@tanstack/react-table": "^8.21.3",
+    "@tanstack/react-virtual": "^3.13.12",
     "plotly.js-basic-dist-min": "^3.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
