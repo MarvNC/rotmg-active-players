@@ -336,9 +336,9 @@ export function PlayerChart({
           <div className="chart-heading-grid">
             <div className="chart-heading-side chart-heading-side-left">
               {shareUrl ? (
-                <a className="chart-share-url mono" href={shareUrl} target="_blank" rel="noopener noreferrer">
+                <span className="chart-share-url mono" aria-label="Share URL">
                   {formatShareUrl(shareUrl)}
-                </a>
+                </span>
               ) : null}
             </div>
 
