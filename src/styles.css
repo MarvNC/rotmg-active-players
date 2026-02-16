@@ -470,18 +470,19 @@ body.modal-open {
 .chart-heading-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  align-items: center;
+  align-items: start;
   gap: 12px;
 }
 
 .chart-heading-side {
   min-height: 30px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .chart-heading-side-right {
   justify-content: flex-end;
+  align-items: flex-start;
 }
 
 .chart-heading-center {
@@ -541,6 +542,7 @@ body.modal-open {
   padding: 6px 10px;
   cursor: pointer;
   transition: border-color 140ms ease, background-color 140ms ease;
+  align-self: flex-start;
 }
 
 .chart-popout-button:hover {
@@ -987,7 +989,8 @@ body.modal-open {
 
   .chart-heading-side,
   .chart-heading-side-right {
-    justify-content: center;
+    justify-content: flex-start;
+    align-items: flex-start;
     min-height: 0;
   }
 }
