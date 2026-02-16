@@ -19178,9 +19178,9 @@
   {
     "date": "2026-02-16",
     "realmeye_max": 37745,
-    "realmeye_min": 37745,
+    "realmeye_min": 37606,
     "realmstock_max": 2651,
-    "realmstock_min": 2519,
-    "launcher_loads": null
+    "realmstock_min": 2298,
+    "launcher_loads": 15217
   }
 ]
