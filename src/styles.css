@@ -533,6 +533,32 @@ body.modal-open {
   background: #131313;
 }
 
+@supports (-moz-appearance: none) {
+  .data-grid,
+  .data-grid-viewport {
+    scrollbar-width: auto;
+    scrollbar-color: rgba(220, 40, 40, 0.85) rgba(255, 255, 255, 0.06);
+  }
+}
+
+.data-grid::-webkit-scrollbar,
+.data-grid-viewport::-webkit-scrollbar {
+  width: 18px;
+  height: 18px;
+}
+
+.data-grid::-webkit-scrollbar-track,
+.data-grid-viewport::-webkit-scrollbar-track {
+  background: #1c1c1c;
+  border-radius: 999px;
+}
+
+.data-grid::-webkit-scrollbar-thumb,
+.data-grid-viewport::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: var(--brand-red);
+}
+
 .data-grid-row {
   display: grid;
   grid-template-columns: var(--table-columns);
@@ -584,6 +610,7 @@ body.modal-open {
   height: calc(64vh - 46px);
   min-height: 374px;
   overflow: auto;
+  scrollbar-gutter: stable;
 }
 
 .data-grid-body-row.even {
