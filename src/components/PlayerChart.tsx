@@ -7,6 +7,7 @@ import type { DateRange } from "../types";
 type PlayerChartProps = {
   title: string;
   subtitle?: string;
+  shareUrl?: string;
   dates: string[];
   minValues: Array<number | null>;
   maxValues: Array<number | null>;
@@ -57,9 +58,14 @@ function formatPlayers(value: number | null): string {
   return Intl.NumberFormat("en-US").format(value);
 }
 
+function formatShareUrl(url: string): string {
+  return url.replace(/^https?:\/\//, "").replace(/\/$/, "");
+}
+
 export function PlayerChart({
   title,
   subtitle,
+  shareUrl,
   dates,
   minValues,
   maxValues,
@@ -325,24 +331,39 @@ export function PlayerChart({
 
   return (
     <div className="chart-shell">
-      {(title || subtitle) && showTitle ? (
+      {(title || subtitle || shareUrl) && showTitle ? (
         <div className="chart-heading">
-          <h2 className="chart-title">{title}</h2>
-          {subtitle ? <p className="chart-subtitle">{subtitle}</p> : null}
+          <div className="chart-heading-grid">
+            <div className="chart-heading-side chart-heading-side-left">
+              {shareUrl ? (
+                <a className="chart-share-url mono" href={shareUrl} target="_blank" rel="noopener noreferrer">
+                  {formatShareUrl(shareUrl)}
+                </a>
+              ) : null}
+            </div>
+
+            <div className="chart-heading-center">
+              {title ? <h2 className="chart-title">{title}</h2> : null}
+              {subtitle ? <p className="chart-subtitle">{subtitle}</p> : null}
+            </div>
+
+            <div className="chart-heading-side chart-heading-side-right">
+              {onPopOut ? (
+                <button
+                  type="button"
+                  className="chart-popout-button"
+                  onClick={onPopOut}
+                  aria-label={`Open ${title} in modal`}
+                >
+                  <Expand size={13} aria-hidden="true" />
+                  Expand
+                </button>
+              ) : null}
+            </div>
+          </div>
         </div>
       ) : null}
       <div className="chart-frame" style={{ height: `${frameHeight}px` }}>
-        {onPopOut ? (
-          <button
-            type="button"
-            className="chart-popout-button"
-            onClick={onPopOut}
-            aria-label={`Open ${title} in modal`}
-          >
-            <Expand size={13} aria-hidden="true" />
-            Expand
-          </button>
-        ) : null}
         <div ref={hostRef} className="uplot-shell" />
         <div ref={tooltipRef} className="uplot-tooltip" />
       </div>

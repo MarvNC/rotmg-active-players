@@ -31,6 +31,8 @@ const CHART_COPY = {
   }
 } as const;
 
+const SITE_URL = "https://rotmg-stats.maarv.dev/";
+
 const data = decodeDailyData(compactData as CompactDaily).sort((a, b) => a.date.localeCompare(b.date));
 const allDates = data.map((item) => item.date);
 
@@ -241,6 +243,7 @@ export default function App() {
             <PlayerChart
               title={CHART_COPY.realmeye.title}
               subtitle={CHART_COPY.realmeye.subtitle}
+              shareUrl={SITE_URL}
               dates={realmeyeDates}
               minValues={realmeyeMin}
               maxValues={realmeyeMax}
@@ -253,6 +256,7 @@ export default function App() {
             <PlayerChart
               title={CHART_COPY.realmstock.title}
               subtitle={CHART_COPY.realmstock.subtitle}
+              shareUrl={SITE_URL}
               dates={realmstockDates}
               minValues={realmstockMin}
               maxValues={realmstockMax}
@@ -266,6 +270,7 @@ export default function App() {
             <PlayerChart
               title={CHART_COPY.launcher.title}
               subtitle={CHART_COPY.launcher.subtitle}
+              shareUrl={SITE_URL}
               dates={launcherDates}
               minValues={launcherLoads}
               maxValues={launcherLoads}
@@ -316,6 +321,7 @@ export default function App() {
               <PlayerChart
                 title={expandedChartTitle}
                 subtitle={expandedChartSubtitle ?? undefined}
+                shareUrl={SITE_URL}
                 dates={
                   expandedChart === "realmeye"
                     ? realmeyeDates
@@ -381,7 +387,17 @@ export default function App() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Realmstock
+           Realmstock
+          </a>
+        </p>
+        <p>
+          Website: {" "}
+          <a
+            href="https://rotmg-stats.maarv.dev/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            https://rotmg-stats.maarv.dev/
           </a>
         </p>
       </footer>

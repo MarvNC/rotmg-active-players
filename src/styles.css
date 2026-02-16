@@ -463,9 +463,30 @@ body.modal-open {
 }
 
 .chart-heading {
+  display: block;
+  margin: 4px 4px 10px;
+}
+
+.chart-heading-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.chart-heading-side {
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+}
+
+.chart-heading-side-right {
+  justify-content: flex-end;
+}
+
+.chart-heading-center {
   display: grid;
   gap: 4px;
-  margin: 4px 4px 10px;
   justify-items: center;
 }
 
@@ -487,6 +508,16 @@ body.modal-open {
   text-align: center;
 }
 
+.chart-share-url {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-decoration: none;
+}
+
+.chart-share-url:hover {
+  color: var(--text-main);
+}
+
 .chart-frame {
   border: 1px solid var(--chart-shell-border);
   border-radius: 10px;
@@ -497,10 +528,6 @@ body.modal-open {
 }
 
 .chart-popout-button {
-  position: absolute;
-  top: 14px;
-  right: 10px;
-  z-index: 4;
   border: 1px solid rgba(220, 40, 40, 0.45);
   border-radius: var(--radius-sm);
   background: var(--chart-button-bg);
@@ -951,6 +978,17 @@ body.modal-open {
 
   .chart-modal-header .outline-button {
     width: 100%;
+  }
+
+  .chart-heading-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .chart-heading-side,
+  .chart-heading-side-right {
+    justify-content: center;
+    min-height: 0;
   }
 }
 
