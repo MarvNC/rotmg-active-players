@@ -1,19 +1,84 @@
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&family=Russo+One&family=Sora:wght@400;500;600;700&display=swap");
 
 :root {
+  color-scheme: dark;
   --brand-red: #dc2828;
   --pill-active-bg: #dc2828;
   --pill-active-border: #f87171;
   --pill-active-shadow: rgba(220, 40, 40, 0.36);
   --bg-dark: #0a0a0a;
+  --bg-radial-1: rgba(220, 40, 40, 0.22);
+  --bg-radial-2: rgba(220, 40, 40, 0.09);
+  --bg-gradient-start: #050505;
+  --bg-gradient-mid: #0a0a0a;
+  --bg-gradient-end: #080808;
   --surface-1: #171717;
   --surface-2: #262626;
+  --surface-hover: rgba(255, 255, 255, 0.04);
   --emerald: #10b981;
   --text-main: #f3f4f6;
   --text-muted: #737373;
   --border-subtle: #2a2a2a;
+  --topbar-bg: rgba(10, 10, 10, 0.74);
+  --topbar-border: rgba(220, 40, 40, 0.25);
+  --panel-highlight: rgba(255, 255, 255, 0.02);
+  --chart-shell-border: rgba(255, 255, 255, 0.04);
+  --chart-frame-start: #171717;
+  --chart-frame-end: #141414;
+  --chart-button-bg: rgba(10, 10, 10, 0.82);
+  --modal-backdrop: rgba(0, 0, 0, 0.7);
+  --modal-surface-start: rgba(24, 24, 24, 0.98);
+  --modal-surface-end: rgba(18, 18, 18, 0.98);
+  --tooltip-bg: rgba(10, 10, 10, 0.95);
+  --tooltip-border: rgba(220, 40, 40, 0.7);
+  --cursor-line: rgba(243, 244, 246, 0.7);
+  --timeline-track-bg: #1f1f1f;
+  --timeline-track-border: #2b2b2b;
+  --thumb-ring: rgba(220, 40, 40, 0.45);
+  --data-grid-bg: #131313;
+  --data-grid-scroll-track: #1c1c1c;
+  --footer-bg: rgba(10, 10, 10, 0.4);
   --radius-sm: 4px;
   --radius-md: 12px;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg-dark: #f7f8fb;
+  --bg-radial-1: rgba(220, 40, 40, 0.14);
+  --bg-radial-2: rgba(220, 40, 40, 0.08);
+  --bg-gradient-start: #ffffff;
+  --bg-gradient-mid: #f7f8fb;
+  --bg-gradient-end: #edf1f7;
+  --surface-1: #ffffff;
+  --surface-2: #d7dbe5;
+  --surface-hover: rgba(0, 0, 0, 0.05);
+  --pill-active-bg: #b91c1c;
+  --pill-active-border: #ef4444;
+  --pill-active-shadow: rgba(185, 28, 28, 0.25);
+  --emerald: #047857;
+  --text-main: #111827;
+  --text-muted: #6b7280;
+  --border-subtle: #d7dbe5;
+  --topbar-bg: rgba(247, 248, 251, 0.9);
+  --topbar-border: rgba(220, 40, 40, 0.18);
+  --panel-highlight: rgba(15, 23, 42, 0.04);
+  --chart-shell-border: rgba(15, 23, 42, 0.14);
+  --chart-frame-start: #f9fafb;
+  --chart-frame-end: #eef2f7;
+  --chart-button-bg: rgba(255, 255, 255, 0.88);
+  --modal-backdrop: rgba(17, 24, 39, 0.35);
+  --modal-surface-start: rgba(255, 255, 255, 0.98);
+  --modal-surface-end: rgba(244, 247, 252, 0.98);
+  --tooltip-bg: rgba(255, 255, 255, 0.96);
+  --tooltip-border: rgba(220, 40, 40, 0.55);
+  --cursor-line: rgba(15, 23, 42, 0.45);
+  --timeline-track-bg: #e5e7eb;
+  --timeline-track-border: #cbd5e1;
+  --thumb-ring: rgba(220, 40, 40, 0.35);
+  --data-grid-bg: #f9fafb;
+  --data-grid-scroll-track: #e5e7eb;
+  --footer-bg: rgba(243, 244, 246, 0.84);
 }
 
 * {
@@ -26,9 +91,9 @@ body {
   color: var(--text-main);
   font-family: "Sora", sans-serif;
   background:
-    radial-gradient(circle at 5% -20%, rgba(220, 40, 40, 0.22), transparent 35%),
-    radial-gradient(circle at 95% 5%, rgba(220, 40, 40, 0.09), transparent 25%),
-    linear-gradient(150deg, #050505 0%, #0a0a0a 42%, #080808 100%);
+    radial-gradient(circle at 5% -20%, var(--bg-radial-1), transparent 35%),
+    radial-gradient(circle at 95% 5%, var(--bg-radial-2), transparent 25%),
+    linear-gradient(150deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 42%, var(--bg-gradient-end) 100%);
 }
 
 body.modal-open {
@@ -45,8 +110,8 @@ body.modal-open {
   position: sticky;
   top: 0;
   z-index: 50;
-  border-bottom: 1px solid rgba(220, 40, 40, 0.25);
-  background: rgba(10, 10, 10, 0.74);
+  border-bottom: 1px solid var(--topbar-border);
+  background: var(--topbar-bg);
   backdrop-filter: blur(12px);
 }
 
@@ -54,6 +119,10 @@ body.modal-open {
   width: min(1280px, 94vw);
   margin: 0 auto;
   padding: 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .brand {
@@ -78,6 +147,30 @@ body.modal-open {
   letter-spacing: 0.03em;
 }
 
+.theme-mode-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--surface-2);
+  border-radius: 999px;
+  background: var(--panel-highlight);
+  color: var(--text-main);
+  padding: 8px 12px;
+  font-family: "Sora", sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 130ms ease, background-color 130ms ease;
+}
+
+.theme-mode-button:hover {
+  border-color: rgba(220, 40, 40, 0.5);
+  background: rgba(220, 40, 40, 0.14);
+}
+
+.theme-mode-button svg {
+  color: var(--brand-red);
+}
+
 .topbar p {
   margin: 6px 0 0;
   color: var(--text-muted);
@@ -100,7 +193,7 @@ body.modal-open {
 .stat-card {
   border: 1px solid var(--surface-2);
   border-radius: var(--radius-md);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0));
+  background: linear-gradient(180deg, var(--panel-highlight), rgba(255, 255, 255, 0));
   padding: 16px;
   transition: border-color 160ms ease, transform 160ms ease;
   animation: card-enter 260ms ease both;
@@ -117,6 +210,21 @@ body.modal-open {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+
+.with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.with-icon svg {
+  color: var(--brand-red);
+  transition: transform 140ms ease, color 140ms ease;
+}
+
+.stat-card:hover .with-icon svg {
+  transform: scale(1.08);
 }
 
 .stat-value {
@@ -167,9 +275,12 @@ body.modal-open {
 .tab-button {
   border: 1px solid var(--surface-2);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--panel-highlight);
   color: var(--text-main);
   font-family: "Sora", sans-serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 8px 14px;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -192,7 +303,14 @@ body.modal-open {
   padding: 4px;
   border: 1px solid var(--surface-2);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.01);
+  background: var(--panel-highlight);
+}
+
+.range-selector-icon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-muted);
+  padding: 0 4px 0 6px;
 }
 
 .range-pill {
@@ -209,7 +327,7 @@ body.modal-open {
 
 .range-pill:hover {
   color: var(--text-main);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface-hover);
 }
 
 .range-pill.active {
@@ -242,6 +360,9 @@ body.modal-open {
 
 .timeline-header h3 {
   margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -257,6 +378,11 @@ body.modal-open {
   color: var(--text-muted);
 }
 
+.timeline-header h3 svg,
+.timeline-header p svg {
+  color: var(--brand-red);
+}
+
 .timeline-slider-wrap {
   position: relative;
   height: 34px;
@@ -270,8 +396,8 @@ body.modal-open {
   height: 6px;
   border-radius: 999px;
   transform: translateY(-50%);
-  background: #1f1f1f;
-  border: 1px solid #2b2b2b;
+  background: var(--timeline-track-bg);
+  border: 1px solid var(--timeline-track-border);
 }
 
 .timeline-track-active {
@@ -307,7 +433,7 @@ body.modal-open {
   border-radius: 50%;
   border: 2px solid #ffffff;
   background: var(--brand-red);
-  box-shadow: 0 0 0 2px rgba(220, 40, 40, 0.45);
+  box-shadow: 0 0 0 2px var(--thumb-ring);
   cursor: ew-resize;
 }
 
@@ -318,7 +444,7 @@ body.modal-open {
   border-radius: 50%;
   border: 2px solid #ffffff;
   background: var(--brand-red);
-  box-shadow: 0 0 0 2px rgba(220, 40, 40, 0.45);
+  box-shadow: 0 0 0 2px var(--thumb-ring);
   cursor: ew-resize;
 }
 
@@ -331,11 +457,11 @@ body.modal-open {
 }
 
 .chart-frame {
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--chart-shell-border);
   border-radius: 10px;
   overflow: hidden;
   position: relative;
-  background: linear-gradient(180deg, #171717, #141414);
+  background: linear-gradient(180deg, var(--chart-frame-start), var(--chart-frame-end));
 }
 
 .chart-popout-button {
@@ -345,11 +471,14 @@ body.modal-open {
   z-index: 4;
   border: 1px solid rgba(220, 40, 40, 0.45);
   border-radius: var(--radius-sm);
-  background: rgba(10, 10, 10, 0.82);
+  background: var(--chart-button-bg);
   color: var(--text-main);
   font-size: 0.76rem;
   font-weight: 600;
   letter-spacing: 0.03em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 6px 10px;
   cursor: pointer;
   transition: border-color 140ms ease, background-color 140ms ease;
@@ -367,7 +496,7 @@ body.modal-open {
   display: grid;
   place-items: center;
   padding: 20px;
-  background: rgba(0, 0, 0, 0.7);
+  background: var(--modal-backdrop);
   backdrop-filter: blur(6px);
 }
 
@@ -377,7 +506,7 @@ body.modal-open {
   overflow: auto;
   border: 1px solid rgba(220, 40, 40, 0.35);
   border-radius: var(--radius-md);
-  background: linear-gradient(180deg, rgba(24, 24, 24, 0.98), rgba(18, 18, 18, 0.98));
+  background: linear-gradient(180deg, var(--modal-surface-start), var(--modal-surface-end));
   box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
   padding: 10px;
 }
@@ -413,7 +542,7 @@ body.modal-open {
 
 .uplot .u-cursor-x,
 .uplot .u-cursor-y {
-  background: rgba(243, 244, 246, 0.7) !important;
+  background: var(--cursor-line) !important;
 }
 
 .uplot-tooltip {
@@ -423,8 +552,8 @@ body.modal-open {
   min-width: 150px;
   padding: 8px 10px;
   border-radius: 8px;
-  border: 1px solid rgba(220, 40, 40, 0.7);
-  background: rgba(10, 10, 10, 0.95);
+  border: 1px solid var(--tooltip-border);
+  background: var(--tooltip-bg);
   color: var(--text-main);
   pointer-events: none;
   opacity: 0;
@@ -471,6 +600,13 @@ body.modal-open {
 .table-toolbar h2 {
   margin: 0;
   font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.table-toolbar h2 svg {
+  color: var(--brand-red);
 }
 
 .table-actions {
@@ -497,8 +633,8 @@ body.modal-open {
 
 .table-search-icon {
   color: var(--text-muted);
-  font-size: 0.75rem;
-  letter-spacing: -0.05em;
+  display: inline-flex;
+  align-items: center;
 }
 
 .table-search input {
@@ -522,6 +658,9 @@ body.modal-open {
   color: var(--text-main);
   padding: 8px 12px;
   font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   cursor: pointer;
   transition: background-color 130ms ease;
 }
@@ -536,7 +675,7 @@ body.modal-open {
   border: 1px solid var(--border-subtle);
   border-radius: 10px;
   overflow: hidden;
-  background: #131313;
+  background: var(--data-grid-bg);
 }
 
 @supports (-moz-appearance: none) {
@@ -555,7 +694,7 @@ body.modal-open {
 
 .data-grid::-webkit-scrollbar-track,
 .data-grid-viewport::-webkit-scrollbar-track {
-  background: #1c1c1c;
+  background: var(--data-grid-scroll-track);
   border-radius: 999px;
 }
 
@@ -620,7 +759,7 @@ body.modal-open {
 }
 
 .data-grid-body-row.even {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--panel-highlight);
 }
 
 .data-grid-body-row:hover {
@@ -686,8 +825,16 @@ body.modal-open {
 }
 
 @media (max-width: 640px) {
+  .topbar-inner {
+    align-items: flex-start;
+  }
+
   .brand {
     gap: 10px;
+  }
+
+  .theme-mode-button {
+    margin-top: 2px;
   }
 
   .brand-icon {
@@ -774,7 +921,7 @@ body.modal-open {
   font-size: 0.85rem;
   border-top: 1px solid var(--surface-2);
   margin-top: auto;
-  background: rgba(10, 10, 10, 0.4);
+  background: var(--footer-bg);
 }
 
 .app-footer p {

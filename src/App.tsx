@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { LineChart, MonitorCog, Moon, Sun, Table2, X } from "lucide-react";
 import compactData from "./data/daily.json";
 import { DataTable } from "./components/DataTable";
 import { PlayerChart } from "./components/PlayerChart";
@@ -12,6 +13,8 @@ import { buildStats, buildTableRows } from "./utils/metrics";
 
 type Tab = "charts" | "table";
 type ExpandedChart = "realmeye" | "realmstock" | "launcher" | null;
+type ThemeMode = "system" | "light" | "dark";
+type ResolvedTheme = "light" | "dark";
 
 const data = decodeDailyData(compactData as CompactDaily).sort((a, b) => a.date.localeCompare(b.date));
 const allDates = data.map((item) => item.date);
@@ -21,6 +24,15 @@ export default function App() {
   const [preset, setPreset] = useState<RangePreset>("ALL");
   const [range, setRange] = useState<DateRange>(() => resolvePresetRange(data, "ALL"));
   const [expandedChart, setExpandedChart] = useState<ExpandedChart>(null);
+  const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
+    if (typeof window === "undefined") {
+      return "system";
+    }
+
+    const stored = window.localStorage.getItem("rotmg-theme-mode");
+    return stored === "light" || stored === "dark" || stored === "system" ? stored : "system";
+  });
+  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>("dark");
 
   const filtered = useMemo(() => filterByRange(data, range), [range]);
   const stats = useMemo(() => buildStats(data), []);
@@ -73,6 +85,53 @@ export default function App() {
     };
   }, [expandedChart]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+    const applyTheme = () => {
+      const nextTheme: ResolvedTheme =
+        themeMode === "system" ? (mediaQuery.matches ? "dark" : "light") : themeMode;
+
+      document.documentElement.dataset.theme = nextTheme;
+      setResolvedTheme(nextTheme);
+    };
+
+    applyTheme();
+
+    const onSchemeChange = () => {
+      if (themeMode === "system") {
+        applyTheme();
+      }
+    };
+
+    mediaQuery.addEventListener("change", onSchemeChange);
+
+    return () => {
+      mediaQuery.removeEventListener("change", onSchemeChange);
+    };
+  }, [themeMode]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("rotmg-theme-mode", themeMode);
+    }
+  }, [themeMode]);
+
+  const themeButton =
+    themeMode === "system"
+      ? { Icon: MonitorCog, label: "System" }
+      : themeMode === "light"
+        ? { Icon: Sun, label: "Light" }
+        : { Icon: Moon, label: "Dark" };
+
+  const cycleThemeMode = () => {
+    setThemeMode((current) => (current === "system" ? "light" : current === "light" ? "dark" : "system"));
+  };
+
   const expandedChartTitle =
     expandedChart === "realmeye"
       ? "RealmEye Active Players Over Time"
@@ -90,6 +149,17 @@ export default function App() {
             <img className="brand-icon" src="/image.png" width={40} height={40} alt="RotMG Player Stats logo" />
             <h1>RotMG Player Stats</h1>
           </div>
+
+          <button
+            type="button"
+            className="theme-mode-button"
+            onClick={cycleThemeMode}
+            aria-label={`Theme mode: ${themeButton.label}. Click to switch mode.`}
+            title={`Theme: ${themeButton.label}`}
+          >
+            <themeButton.Icon size={16} strokeWidth={2} aria-hidden="true" />
+            <span>{themeButton.label}</span>
+          </button>
         </div>
       </header>
 
@@ -104,6 +174,7 @@ export default function App() {
               className={`tab-button${activeTab === "charts" ? " active" : ""}`}
               onClick={() => setActiveTab("charts")}
             >
+              <LineChart size={15} aria-hidden="true" />
               Charts
             </button>
             <button
@@ -112,6 +183,7 @@ export default function App() {
               className={`tab-button${activeTab === "table" ? " active" : ""}`}
               onClick={() => setActiveTab("table")}
             >
+              <Table2 size={15} aria-hidden="true" />
               Data Table
             </button>
           </div>
@@ -141,6 +213,7 @@ export default function App() {
               dates={realmeyeDates}
               minValues={realmeyeMin}
               maxValues={realmeyeMax}
+              theme={resolvedTheme}
               range={range}
               syncKey="rotmg-sync"
               onPopOut={() => setExpandedChart("realmeye")}
@@ -152,6 +225,7 @@ export default function App() {
               minValues={realmstockMin}
               maxValues={realmstockMax}
               tooltipValueLabel="players online"
+              theme={resolvedTheme}
               range={range}
               syncKey="rotmg-sync"
               onPopOut={() => setExpandedChart("realmstock")}
@@ -163,6 +237,7 @@ export default function App() {
               minValues={launcherLoads}
               maxValues={launcherLoads}
               tooltipValueLabel="loads"
+              theme={resolvedTheme}
               range={range}
               syncKey="rotmg-sync"
               onPopOut={() => setExpandedChart("launcher")}
@@ -191,6 +266,7 @@ export default function App() {
                   className="outline-button"
                   onClick={() => setExpandedChart(null)}
                 >
+                  <X size={14} aria-hidden="true" />
                   Close
                 </button>
               </div>
@@ -234,6 +310,7 @@ export default function App() {
                       ? "loads"
                       : "players"
                 }
+                theme={resolvedTheme}
                 range={range}
                 syncKey="rotmg-modal-sync"
                 height={460}

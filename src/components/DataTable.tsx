@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState, type CSSProperties } from "react";
+import { Download, Search, Table2 } from "lucide-react";
 import {
   flexRender,
   getCoreRowModel,
@@ -178,12 +179,15 @@ export function DataTable({ rows }: DataTableProps) {
   return (
     <section className="table-section" aria-label="Daily data table">
       <div className="table-toolbar">
-        <h2>Daily Data</h2>
+        <h2>
+          <Table2 size={16} aria-hidden="true" />
+          Daily Data
+        </h2>
 
         <div className="table-actions">
           <label className="table-search" htmlFor="table-search-input">
             <span className="table-search-icon" aria-hidden="true">
-              {">>"}
+              <Search size={14} />
             </span>
             <input
               id="table-search-input"
@@ -195,6 +199,7 @@ export function DataTable({ rows }: DataTableProps) {
           </label>
 
           <button type="button" className="outline-button" onClick={onExport}>
+            <Download size={14} aria-hidden="true" />
             Export CSV
           </button>
         </div>

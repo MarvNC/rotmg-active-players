@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Expand } from "lucide-react";
 import uPlot from "uplot";
 import type { AlignedData, Options } from "uplot";
 import type { DateRange } from "../types";
@@ -9,6 +10,7 @@ type PlayerChartProps = {
   minValues: Array<number | null>;
   maxValues: Array<number | null>;
   tooltipValueLabel?: string;
+  theme: "light" | "dark";
   range: DateRange;
   syncKey: string;
   height?: number;
@@ -60,6 +62,7 @@ export function PlayerChart({
   minValues,
   maxValues,
   tooltipValueLabel = "players",
+  theme,
   range,
   syncKey,
   height = 392,
@@ -118,13 +121,13 @@ export function PlayerChart({
       },
       axes: [
         {
-          stroke: "#737373",
+          stroke: theme === "dark" ? "#737373" : "#6b7280",
           space: 90,
           grid: {
             show: false
           },
           ticks: {
-            stroke: "#262626"
+            stroke: theme === "dark" ? "#262626" : "#e2e8f0"
           },
           values: (u, splits) => {
             const xMin = u.scales.x.min ?? Number(splits[0] ?? 0);
@@ -142,13 +145,13 @@ export function PlayerChart({
           }
         },
         {
-          stroke: "#737373",
+          stroke: theme === "dark" ? "#737373" : "#6b7280",
           grid: {
-            stroke: "#262626",
+            stroke: theme === "dark" ? "#262626" : "#e2e8f0",
             width: 1
           },
           ticks: {
-            stroke: "#262626"
+            stroke: theme === "dark" ? "#262626" : "#e2e8f0"
           },
           values: (_, splits) =>
             splits.map((split) =>
@@ -191,7 +194,7 @@ export function PlayerChart({
           label: "Daily max",
           stroke: "#dc2828",
           width: 3,
-          fill: "rgba(220,40,40,0.24)",
+          fill: theme === "dark" ? "rgba(220,40,40,0.24)" : "rgba(220,40,40,0.2)",
           spanGaps: true,
           points: {
             show: false
@@ -301,7 +304,7 @@ export function PlayerChart({
       chart.destroy();
       chartRef.current = null;
     };
-  }, [data, height, minHeightRatio, showTitle, syncKey, title, tooltipValueLabel]);
+  }, [data, height, minHeightRatio, showTitle, syncKey, theme, title, tooltipValueLabel]);
 
   useEffect(() => {
     if (!chartRef.current || data[0].length === 0) {
@@ -331,6 +334,7 @@ export function PlayerChart({
             onClick={onPopOut}
             aria-label={`Open ${title} in modal`}
           >
+            <Expand size={13} aria-hidden="true" />
             Expand
           </button>
         ) : null}

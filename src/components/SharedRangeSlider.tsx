@@ -1,4 +1,5 @@
 import { useMemo, useRef, type PointerEvent as ReactPointerEvent } from "react";
+import { CalendarDays, SlidersHorizontal } from "lucide-react";
 import type { DateRange } from "../types";
 
 type SharedRangeSliderProps = {
@@ -118,8 +119,12 @@ export function SharedRangeSlider({ dates, range, onChange }: SharedRangeSliderP
   return (
     <section className="panel timeline-panel" aria-label="Global chart range slider">
       <div className="timeline-header">
-        <h3>Global Time Range</h3>
+        <h3>
+          <SlidersHorizontal size={14} aria-hidden="true" />
+          Global Time Range
+        </h3>
         <p>
+          <CalendarDays size={14} aria-hidden="true" />
           <span className="mono">{dates[bounds.start]}</span>
           <span>to</span>
           <span className="mono">{dates[bounds.end]}</span>

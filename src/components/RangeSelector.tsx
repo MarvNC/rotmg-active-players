@@ -1,4 +1,5 @@
 import type { RangePreset } from "../utils/dateRange";
+import { CalendarRange } from "lucide-react";
 
 type RangeSelectorProps = {
   active: RangePreset;
@@ -10,6 +11,10 @@ const PRESETS: RangePreset[] = ["1M", "6M", "1Y", "ALL"];
 export function RangeSelector({ active, onSelect }: RangeSelectorProps) {
   return (
     <div className="range-selector" role="group" aria-label="Date range presets">
+      <span className="range-selector-icon" aria-hidden="true">
+        <CalendarRange size={15} />
+      </span>
+
       {PRESETS.map((preset) => (
         <button
           key={preset}
