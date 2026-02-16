@@ -462,6 +462,31 @@ body.modal-open {
   animation: card-enter 340ms ease both;
 }
 
+.chart-heading {
+  display: grid;
+  gap: 4px;
+  margin: 4px 4px 10px;
+  justify-items: center;
+}
+
+.chart-title {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--text-main);
+  text-align: center;
+}
+
+.chart-subtitle {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  max-width: 78ch;
+  text-align: center;
+}
+
 .chart-frame {
   border: 1px solid var(--chart-shell-border);
   border-radius: 10px;
@@ -520,6 +545,10 @@ body.modal-open {
 
 .chart-modal .chart-shell {
   padding: 6px;
+}
+
+.chart-modal .chart-heading {
+  margin-top: 2px;
 }
 
 .chart-modal-header {

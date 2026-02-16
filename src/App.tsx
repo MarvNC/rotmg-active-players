@@ -16,6 +16,21 @@ type ExpandedChart = "realmeye" | "realmstock" | "launcher" | null;
 type ThemeMode = "system" | "light" | "dark";
 type ResolvedTheme = "light" | "dark";
 
+const CHART_COPY = {
+  realmeye: {
+    title: "RealmEye Active Players Over Time",
+    subtitle: "Amount of players seen in the past two weeks, based on RealmEye data."
+  },
+  realmstock: {
+    title: "RotMG Max Live Players Over Time",
+    subtitle: "Maximum number of players logged in at any point each day, based on RealmStock data."
+  },
+  launcher: {
+    title: "Launcher Loads Per Day",
+    subtitle: "Total number of times the game launcher was opened each day."
+  }
+} as const;
+
 const data = decodeDailyData(compactData as CompactDaily).sort((a, b) => a.date.localeCompare(b.date));
 const allDates = data.map((item) => item.date);
 
@@ -140,12 +155,21 @@ export default function App() {
 
   const expandedChartTitle =
     expandedChart === "realmeye"
-      ? "RealmEye Active Players Over Time"
+      ? CHART_COPY.realmeye.title
     : expandedChart === "realmstock"
-        ? "RotMG Max Live Players Over Time"
+        ? CHART_COPY.realmstock.title
         : expandedChart === "launcher"
-          ? "Launcher Loads Per Day"
-        : null;
+          ? CHART_COPY.launcher.title
+          : null;
+
+  const expandedChartSubtitle =
+    expandedChart === "realmeye"
+      ? CHART_COPY.realmeye.subtitle
+      : expandedChart === "realmstock"
+        ? CHART_COPY.realmstock.subtitle
+        : expandedChart === "launcher"
+          ? CHART_COPY.launcher.subtitle
+          : null;
 
   return (
     <div className="app-shell">
@@ -215,7 +239,8 @@ export default function App() {
             />
 
             <PlayerChart
-              title="RealmEye Active Players Over Time"
+              title={CHART_COPY.realmeye.title}
+              subtitle={CHART_COPY.realmeye.subtitle}
               dates={realmeyeDates}
               minValues={realmeyeMin}
               maxValues={realmeyeMax}
@@ -226,7 +251,8 @@ export default function App() {
             />
 
             <PlayerChart
-              title="RotMG Max Live Players Over Time"
+              title={CHART_COPY.realmstock.title}
+              subtitle={CHART_COPY.realmstock.subtitle}
               dates={realmstockDates}
               minValues={realmstockMin}
               maxValues={realmstockMax}
@@ -238,7 +264,8 @@ export default function App() {
             />
 
             <PlayerChart
-              title="Launcher Loads Per Day"
+              title={CHART_COPY.launcher.title}
+              subtitle={CHART_COPY.launcher.subtitle}
               dates={launcherDates}
               minValues={launcherLoads}
               maxValues={launcherLoads}
@@ -288,6 +315,7 @@ export default function App() {
 
               <PlayerChart
                 title={expandedChartTitle}
+                subtitle={expandedChartSubtitle ?? undefined}
                 dates={
                   expandedChart === "realmeye"
                     ? realmeyeDates

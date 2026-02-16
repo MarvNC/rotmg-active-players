@@ -6,6 +6,7 @@ import type { DateRange } from "../types";
 
 type PlayerChartProps = {
   title: string;
+  subtitle?: string;
   dates: string[];
   minValues: Array<number | null>;
   maxValues: Array<number | null>;
@@ -58,6 +59,7 @@ function formatPlayers(value: number | null): string {
 
 export function PlayerChart({
   title,
+  subtitle,
   dates,
   minValues,
   maxValues,
@@ -282,10 +284,6 @@ export function PlayerChart({
       }
     };
 
-    if (showTitle) {
-      options.title = title;
-    }
-
     const chart = new uPlot(options, data, host);
     chartRef.current = chart;
 
@@ -305,7 +303,7 @@ export function PlayerChart({
       chart.destroy();
       chartRef.current = null;
     };
-  }, [data, height, minHeightRatio, showTitle, syncKey, theme, title, tooltipValueLabel]);
+  }, [data, height, minHeightRatio, syncKey, theme, tooltipValueLabel]);
 
   useEffect(() => {
     if (!chartRef.current || data[0].length === 0) {
@@ -327,6 +325,12 @@ export function PlayerChart({
 
   return (
     <div className="chart-shell">
+      {(title || subtitle) && showTitle ? (
+        <div className="chart-heading">
+          <h2 className="chart-title">{title}</h2>
+          {subtitle ? <p className="chart-subtitle">{subtitle}</p> : null}
+        </div>
+      ) : null}
       <div className="chart-frame" style={{ height: `${frameHeight}px` }}>
         {onPopOut ? (
           <button
