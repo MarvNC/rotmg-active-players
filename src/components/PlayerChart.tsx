@@ -222,12 +222,45 @@ export function PlayerChart({
 
             tooltip.innerHTML = `<strong>${formatDateLabel(xValue)}</strong><span>${formatPlayers(yValue)} players</span>`;
 
-            const left = chart.valToPos(xValue, "x");
-            const top = chart.valToPos(yValue, "y");
-            const clampedLeft = Math.min(Math.max(left + 14, 10), chart.bbox.width - 166);
-            const clampedTop = Math.max(Math.min(top - 44, chart.bbox.height - 56), 8);
+            const cursorLeft = chart.cursor.left;
+            const cursorTop = chart.cursor.top;
 
-            tooltip.style.transform = `translate(${clampedLeft}px, ${clampedTop}px)`;
+            if (cursorLeft == null || cursorTop == null || cursorLeft < 0 || cursorTop < 0) {
+              tooltip.style.opacity = "0";
+              return;
+            }
+
+            const bounds = tooltip.offsetParent as HTMLElement | null;
+            if (!bounds) {
+              tooltip.style.opacity = "0";
+              return;
+            }
+
+            const pad = 8;
+            const gap = 12;
+            const boundsRect = bounds.getBoundingClientRect();
+            const overRect = chart.over.getBoundingClientRect();
+            const tooltipWidth = tooltip.offsetWidth;
+            const tooltipHeight = tooltip.offsetHeight;
+            const maxLeft = Math.max(pad, bounds.clientWidth - tooltipWidth - pad);
+            const maxTop = Math.max(pad, bounds.clientHeight - tooltipHeight - pad);
+
+            const anchorLeft = overRect.left - boundsRect.left + cursorLeft;
+            const anchorTop = overRect.top - boundsRect.top + cursorTop;
+
+            const rightLeft = anchorLeft + gap;
+            const leftLeft = anchorLeft - tooltipWidth - gap;
+
+            const tooltipLeft =
+              rightLeft + tooltipWidth <= bounds.clientWidth - pad
+                ? rightLeft
+                : leftLeft >= pad
+                  ? leftLeft
+                  : Math.min(Math.max(rightLeft, pad), maxLeft);
+
+            const tooltipTop = Math.min(Math.max(anchorTop - tooltipHeight / 2, pad), maxTop);
+
+            tooltip.style.transform = `translate(${Math.round(tooltipLeft)}px, ${Math.round(tooltipTop)}px)`;
             tooltip.style.opacity = "1";
           }
         ]
