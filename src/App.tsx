@@ -23,11 +23,13 @@ const CHART_COPY = {
   },
   realmstock: {
     title: "RotMG Max Live Players Over Time",
-    subtitle: "Maximum number of players logged in at any point each day, based on RealmStock data."
+    subtitle: "Maximum number of players logged in at any point each day, based on RealmStock data.",
+    smoothedSubtitle: "7-day rolling average of daily min and max live players, based on RealmStock data."
   },
   launcher: {
     title: "Launcher Loads Per Day",
-    subtitle: "Total number of times the game launcher was opened each day."
+    subtitle: "Total number of times the game launcher was opened each day.",
+    smoothedSubtitle: "7-day rolling average of total launcher loads per day."
   }
 } as const;
 
@@ -38,11 +40,38 @@ const GITHUB_REPO_URL = "https://github.com/MarvNC/rotmg-player-stats";
 const data = decodeDailyData(compactData as CompactDaily).sort((a, b) => a.date.localeCompare(b.date));
 const allDates = data.map((item) => item.date);
 
+function smoothWeekly(values: Array<number | null>): Array<number | null> {
+  const windowDays = 7;
+  const smoothed: Array<number | null> = [];
+
+  for (let index = 0; index < values.length; index += 1) {
+    const start = Math.max(0, index - windowDays + 1);
+    let sum = 0;
+    let count = 0;
+
+    for (let cursor = start; cursor <= index; cursor += 1) {
+      const value = values[cursor];
+      if (value == null) {
+        continue;
+      }
+
+      sum += value;
+      count += 1;
+    }
+
+    smoothed.push(count > 0 ? Math.round(sum / count) : null);
+  }
+
+  return smoothed;
+}
+
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>("charts");
   const [preset, setPreset] = useState<RangePreset>("ALL");
   const [range, setRange] = useState<DateRange>(() => resolvePresetRange(data, "ALL"));
   const [expandedChart, setExpandedChart] = useState<ExpandedChart>(null);
+  const [isRealmstockWeeklySmoothOn, setIsRealmstockWeeklySmoothOn] = useState(true);
+  const [isLauncherWeeklySmoothOn, setIsLauncherWeeklySmoothOn] = useState(true);
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
     if (typeof window === "undefined") {
       return "system";
@@ -81,6 +110,8 @@ export default function App() {
   const realmstockDates = useMemo(() => realmstockSeries.map((item) => item.date), [realmstockSeries]);
   const realmstockMin = useMemo(() => realmstockSeries.map((item) => item.realmstock_min), [realmstockSeries]);
   const realmstockMax = useMemo(() => realmstockSeries.map((item) => item.realmstock_max), [realmstockSeries]);
+  const realmstockSmoothedMin = useMemo(() => smoothWeekly(realmstockMin), [realmstockMin]);
+  const realmstockSmoothedMax = useMemo(() => smoothWeekly(realmstockMax), [realmstockMax]);
 
   const launcherSeries = useMemo(
     () => filtered.filter((item) => item.launcher_loads != null),
@@ -89,6 +120,14 @@ export default function App() {
 
   const launcherDates = useMemo(() => launcherSeries.map((item) => item.date), [launcherSeries]);
   const launcherLoads = useMemo(() => launcherSeries.map((item) => item.launcher_loads), [launcherSeries]);
+  const launcherSmoothedLoads = useMemo(() => smoothWeekly(launcherLoads), [launcherLoads]);
+
+  const realmstockSubtitle = isRealmstockWeeklySmoothOn
+    ? CHART_COPY.realmstock.smoothedSubtitle
+    : CHART_COPY.realmstock.subtitle;
+  const launcherSubtitle = isLauncherWeeklySmoothOn
+    ? CHART_COPY.launcher.smoothedSubtitle
+    : CHART_COPY.launcher.subtitle;
 
   useEffect(() => {
     if (expandedChart == null) {
@@ -157,6 +196,19 @@ export default function App() {
     setThemeMode((current) => (current === "system" ? "light" : current === "light" ? "dark" : "system"));
   };
 
+  const renderWeeklySmoothingToggle = (chartTitle: string, isActive: boolean, onToggle: () => void) => (
+    <button
+      type="button"
+      className={`chart-toggle-button${isActive ? " is-active" : ""}`}
+      data-export-exclude="true"
+      onClick={onToggle}
+      aria-label={`Weekly smoothing ${isActive ? "on" : "off"} for ${chartTitle}`}
+      aria-pressed={isActive}
+    >
+      Weekly Smoothing
+    </button>
+  );
+
   const expandedChartTitle =
     expandedChart === "realmeye"
       ? CHART_COPY.realmeye.title
@@ -170,9 +222,9 @@ export default function App() {
     expandedChart === "realmeye"
       ? CHART_COPY.realmeye.subtitle
       : expandedChart === "realmstock"
-        ? CHART_COPY.realmstock.subtitle
+        ? realmstockSubtitle
         : expandedChart === "launcher"
-          ? CHART_COPY.launcher.subtitle
+          ? launcherSubtitle
           : null;
 
   return (
@@ -270,29 +322,39 @@ export default function App() {
 
             <PlayerChart
               title={CHART_COPY.realmstock.title}
-              subtitle={CHART_COPY.realmstock.subtitle}
+              subtitle={realmstockSubtitle}
               shareUrl={SITE_URL}
               dates={realmstockDates}
-              minValues={realmstockMin}
-              maxValues={realmstockMax}
+              minValues={isRealmstockWeeklySmoothOn ? realmstockSmoothedMin : realmstockMin}
+              maxValues={isRealmstockWeeklySmoothOn ? realmstockSmoothedMax : realmstockMax}
               tooltipValueLabel="players online"
               theme={resolvedTheme}
               range={range}
               syncKey="rotmg-sync"
+              headerControls={renderWeeklySmoothingToggle(
+                CHART_COPY.realmstock.title,
+                isRealmstockWeeklySmoothOn,
+                () => setIsRealmstockWeeklySmoothOn((current) => !current)
+              )}
               onPopOut={() => setExpandedChart("realmstock")}
             />
 
             <PlayerChart
               title={CHART_COPY.launcher.title}
-              subtitle={CHART_COPY.launcher.subtitle}
+              subtitle={launcherSubtitle}
               shareUrl={SITE_URL}
               dates={launcherDates}
-              minValues={launcherLoads}
-              maxValues={launcherLoads}
+              minValues={isLauncherWeeklySmoothOn ? launcherSmoothedLoads : launcherLoads}
+              maxValues={isLauncherWeeklySmoothOn ? launcherSmoothedLoads : launcherLoads}
               tooltipValueLabel="loads"
               theme={resolvedTheme}
               range={range}
               syncKey="rotmg-sync"
+              headerControls={renderWeeklySmoothingToggle(
+                CHART_COPY.launcher.title,
+                isLauncherWeeklySmoothOn,
+                () => setIsLauncherWeeklySmoothOn((current) => !current)
+              )}
               onPopOut={() => setExpandedChart("launcher")}
             />
           </section>
@@ -348,15 +410,23 @@ export default function App() {
                   expandedChart === "realmeye"
                     ? realmeyeMin
                     : expandedChart === "realmstock"
-                      ? realmstockMin
-                      : launcherLoads
+                      ? isRealmstockWeeklySmoothOn
+                        ? realmstockSmoothedMin
+                        : realmstockMin
+                      : isLauncherWeeklySmoothOn
+                        ? launcherSmoothedLoads
+                        : launcherLoads
                 }
                 maxValues={
                   expandedChart === "realmeye"
                     ? realmeyeMax
                     : expandedChart === "realmstock"
-                      ? realmstockMax
-                      : launcherLoads
+                      ? isRealmstockWeeklySmoothOn
+                        ? realmstockSmoothedMax
+                        : realmstockMax
+                      : isLauncherWeeklySmoothOn
+                        ? launcherSmoothedLoads
+                        : launcherLoads
                 }
                 tooltipValueLabel={
                   expandedChart === "realmstock"
@@ -371,6 +441,17 @@ export default function App() {
                 height={460}
                 minHeightRatio={0.5}
                 enableExport
+                headerControls={
+                  expandedChart === "realmstock"
+                    ? renderWeeklySmoothingToggle(CHART_COPY.realmstock.title, isRealmstockWeeklySmoothOn, () =>
+                        setIsRealmstockWeeklySmoothOn((current) => !current)
+                      )
+                    : expandedChart === "launcher"
+                      ? renderWeeklySmoothingToggle(CHART_COPY.launcher.title, isLauncherWeeklySmoothOn, () =>
+                          setIsLauncherWeeklySmoothOn((current) => !current)
+                        )
+                      : null
+                }
               />
             </div>
           </div>

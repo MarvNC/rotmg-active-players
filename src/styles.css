@@ -515,6 +515,8 @@ body.modal-open {
 .chart-heading-side-right {
   justify-content: flex-end;
   align-items: flex-start;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .chart-heading-center {
@@ -580,6 +582,35 @@ body.modal-open {
 .chart-popout-button:hover {
   border-color: rgba(220, 40, 40, 0.8);
   background: rgba(220, 40, 40, 0.2);
+}
+
+.chart-toggle-button {
+  border: 1px solid var(--surface-2);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-1) 74%, #000000 26%);
+  color: var(--text-main);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: border-color 130ms ease, background-color 130ms ease, color 130ms ease, box-shadow 130ms ease;
+}
+
+.chart-toggle-button:hover {
+  border-color: rgba(220, 40, 40, 0.6);
+  background: color-mix(in srgb, var(--surface-1) 50%, rgba(220, 40, 40, 0.26) 50%);
+}
+
+.chart-toggle-button.is-active {
+  border-color: var(--pill-active-border);
+  background: var(--pill-active-bg);
+  color: #ffffff;
+  box-shadow: 0 8px 18px var(--pill-active-shadow);
 }
 
 .chart-modal-backdrop {

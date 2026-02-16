@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Download, Expand } from "lucide-react";
 import { toBlob } from "html-to-image";
 import uPlot from "uplot";
@@ -21,6 +21,7 @@ type PlayerChartProps = {
   showTitle?: boolean;
   onPopOut?: () => void;
   enableExport?: boolean;
+  headerControls?: ReactNode;
 };
 
 function toUnixDay(date: string): number {
@@ -96,7 +97,8 @@ export function PlayerChart({
   minHeightRatio,
   showTitle = true,
   onPopOut,
-  enableExport = false
+  enableExport = false,
+  headerControls
 }: PlayerChartProps) {
   const chartShellRef = useRef<HTMLDivElement>(null);
   const hostRef = useRef<HTMLDivElement>(null);
@@ -399,6 +401,7 @@ export function PlayerChart({
             </div>
 
             <div className="chart-heading-side chart-heading-side-right">
+              {headerControls}
               {enableExport ? (
                 <button
                   type="button"
