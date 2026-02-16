@@ -11,6 +11,15 @@ type DailyAggregate = {
   launcher_loads: number | null;
 };
 
+type CompactDaily = {
+  d: string[];
+  a: Array<number | null>;
+  b: Array<number | null>;
+  c: Array<number | null>;
+  e: Array<number | null>;
+  f: Array<number | null>;
+};
+
 type Row = {
   date: string;
   players: number;
@@ -206,6 +215,21 @@ function mergeDaily(
     });
 }
 
+function compactDate(date: string): string {
+  return date.replace(/-/g, "");
+}
+
+function toCompactDaily(points: DailyAggregate[]): CompactDaily {
+  return {
+    d: points.map((point) => compactDate(point.date)),
+    a: points.map((point) => point.realmeye_max),
+    b: points.map((point) => point.realmeye_min),
+    c: points.map((point) => point.realmstock_max),
+    e: points.map((point) => point.realmstock_min),
+    f: points.map((point) => point.launcher_loads)
+  };
+}
+
 function run(): void {
   const realmeyeSource = existsSync(REALMEYE_FILE) ? REALMEYE_FILE : REALMEYE_FALLBACK;
   const realmeyeRows = parseCsvRows(realmeyeSource);
@@ -217,9 +241,10 @@ function run(): void {
     aggregateByDate(realmstockRows),
     aggregateLauncherLoads(launcherRows)
   );
+  const compact = toCompactDaily(merged);
 
   mkdirSync(resolve(ROOT, "src", "data"), { recursive: true });
-  writeFileSync(OUTPUT_FILE, `${JSON.stringify(merged, null, 2)}\n`, "utf8");
+  writeFileSync(OUTPUT_FILE, `${JSON.stringify(compact)}\n`, "utf8");
 
   process.stdout.write(
     `Aggregated ${merged.length} days from ${realmeyeRows.length} RealmEye rows, ${realmstockRows.length} RealmStock rows, and ${launcherRows.length} launcher rows.\n`

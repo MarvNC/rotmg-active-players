@@ -1,18 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
-import dailyData from "./data/daily.json";
+import compactData from "./data/daily.json";
 import { DataTable } from "./components/DataTable";
 import { PlayerChart } from "./components/PlayerChart";
 import { RangeSelector } from "./components/RangeSelector";
 import { SharedRangeSlider } from "./components/SharedRangeSlider";
 import { StatsCards } from "./components/StatsCards";
-import type { DailyPoint, DateRange } from "./types";
+import type { CompactDaily, DateRange } from "./types";
 import { filterByRange, resolvePresetRange, type RangePreset } from "./utils/dateRange";
+import { decodeDailyData } from "./utils/decodeDailyData";
 import { buildStats, buildTableRows } from "./utils/metrics";
 
 type Tab = "charts" | "table";
 type ExpandedChart = "realmeye" | "realmstock" | "launcher" | null;
 
-const data = (dailyData as DailyPoint[]).slice().sort((a, b) => a.date.localeCompare(b.date));
+const data = decodeDailyData(compactData as CompactDaily).sort((a, b) => a.date.localeCompare(b.date));
 const allDates = data.map((item) => item.date);
 
 export default function App() {

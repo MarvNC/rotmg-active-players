@@ -66,7 +66,14 @@ Data pipeline commands:
 
 - Aggregation script: `scripts/aggregate.ts`
   - Reads `data/realmeye-full.csv`, `data/realmstock-full.csv`, and `data/launcher-full.csv`
-  - Produces day-level min/max values for RealmEye/RealmStock and `launcher_loads` for launcher data in `src/data/daily.json`
+  - Produces a compact columnar JSON artifact in `src/data/daily.json` with key mapping:
+    - `d`: dates (`YYYYMMDD`)
+    - `a`: `realmeye_max`
+    - `b`: `realmeye_min`
+    - `c`: `realmstock_max`
+    - `e`: `realmstock_min`
+    - `f`: `launcher_loads`
+  - Frontend code decodes this compact format into `DailyPoint[]` at runtime
   - Launcher loads are derived from day-over-day differences in cumulative daily max views and are only emitted from `2024-07-03` onward
 
 - Migration scripts:
