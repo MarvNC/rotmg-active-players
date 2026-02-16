@@ -1,0 +1,38 @@
+{
+  "name": "rotmg-active-players",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "aggregate": "bun run scripts/aggregate.ts",
+    "migrate:realmeye": "bun run scripts/migrate-realmeye.ts",
+    "scrape": "bun run scripts/scrape.ts"
+  },
+  "dependencies": {
+    "@fontsource/jetbrains-mono": "^5.2.6",
+    "@fontsource/russo-one": "^5.2.6",
+    "@fontsource/sora": "^5.2.6",
+    "ag-grid-community": "^33.3.2",
+    "ag-grid-react": "^33.3.2",
+    "plotly.js-basic-dist-min": "^3.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-plotly.js": "^2.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "@types/plotly.js": "^3.0.5",
+    "@types/react-plotly.js": "^2.6.3",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^5.0.2",
+    "typescript": "~5.9.2",
+    "vite": "^7.1.2",
+    "vitest": "^3.2.4"
+  }
+}
