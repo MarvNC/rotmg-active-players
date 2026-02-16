@@ -194,39 +194,48 @@ export default function App() {
                 </button>
               </div>
 
-                <PlayerChart
-                  title={expandedChartTitle}
-                  dates={
-                    expandedChart === "realmeye"
-                      ? realmeyeDates
-                      : expandedChart === "realmstock"
-                        ? realmstockDates
-                        : launcherDates
-                  }
-                  minValues={
-                    expandedChart === "realmeye"
-                      ? realmeyeMin
-                      : expandedChart === "realmstock"
-                        ? realmstockMin
-                        : launcherLoads
-                  }
-                  maxValues={
-                    expandedChart === "realmeye"
-                      ? realmeyeMax
-                      : expandedChart === "realmstock"
-                        ? realmstockMax
-                        : launcherLoads
-                  }
-                  tooltipValueLabel={
-                    expandedChart === "realmstock"
-                      ? "players online"
-                      : expandedChart === "launcher"
-                        ? "loads"
-                        : "players"
-                  }
-                  range={range}
-                  syncKey="rotmg-modal-sync"
-                  height={460}
+              <SharedRangeSlider
+                dates={allDates}
+                range={range}
+                onChange={(nextRange) => {
+                  setPreset("ALL");
+                  setRange(nextRange);
+                }}
+              />
+
+              <PlayerChart
+                title={expandedChartTitle}
+                dates={
+                  expandedChart === "realmeye"
+                    ? realmeyeDates
+                    : expandedChart === "realmstock"
+                      ? realmstockDates
+                      : launcherDates
+                }
+                minValues={
+                  expandedChart === "realmeye"
+                    ? realmeyeMin
+                    : expandedChart === "realmstock"
+                      ? realmstockMin
+                      : launcherLoads
+                }
+                maxValues={
+                  expandedChart === "realmeye"
+                    ? realmeyeMax
+                    : expandedChart === "realmstock"
+                      ? realmstockMax
+                      : launcherLoads
+                }
+                tooltipValueLabel={
+                  expandedChart === "realmstock"
+                    ? "players online"
+                    : expandedChart === "launcher"
+                      ? "loads"
+                      : "players"
+                }
+                range={range}
+                syncKey="rotmg-modal-sync"
+                height={460}
                 minHeightRatio={0.5}
               />
             </div>
