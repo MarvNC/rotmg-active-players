@@ -469,24 +469,6 @@ export default function App() {
             MarvNC
           </a>
         </p>
-        <p>
-          Data from{" "}
-          <a
-            href="https://www.realmeye.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Realmeye
-          </a>
-          {" and "}
-          <a
-            href="https://realmstock.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-           Realmstock
-          </a>
-        </p>
       </footer>
     </div>
   );
