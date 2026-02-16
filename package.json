@@ -9,6 +9,10 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
+    "lint": "eslint . --max-warnings=0",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier \"**/*.{ts,tsx,css,mjs,json,yml,yaml}\" --write",
+    "format:check": "prettier \"**/*.{ts,tsx,css,mjs,json,yml,yaml}\" --check",
     "aggregate": "bun run scripts/aggregate.ts",
     "migrate:realmeye": "bun run scripts/migrate-realmeye.ts",
     "migrate:realmstock": "bun run scripts/migrate-realmstock.ts",
@@ -26,11 +30,19 @@
     "uplot": "^1.6.31"
   },
   "devDependencies": {
+    "@eslint/js": "^9",
     "@types/node": "^24.3.0",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^5.0.2",
+    "eslint": "^9",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.0",
+    "globals": "^17.3.0",
+    "prettier": "^3.8.1",
     "typescript": "~5.9.2",
+    "typescript-eslint": "^8.55.0",
     "vite": "^7.1.2",
     "vitest": "^3.2.4"
   }

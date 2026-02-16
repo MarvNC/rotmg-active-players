@@ -7,7 +7,7 @@ import {
   getSortedRowModel,
   useReactTable,
   type ColumnDef,
-  type SortingState
+  type SortingState,
 } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import type { TableRow } from "../utils/metrics";
@@ -24,7 +24,7 @@ const CSV_HEADERS = [
   "realmstock_min",
   "realmeye_delta",
   "launcher_loads",
-  "launcher_delta"
+  "launcher_delta",
 ] as const;
 
 function numberFormatter(value: number | null): string {
@@ -40,7 +40,7 @@ function escapeCsv(value: string): string {
     return value;
   }
 
-  return `"${value.replaceAll("\"", "\"\"")}"`;
+  return `"${value.replaceAll('"', '""')}"`;
 }
 
 export function DataTable({ rows }: DataTableProps) {
@@ -53,27 +53,27 @@ export function DataTable({ rows }: DataTableProps) {
       {
         accessorKey: "date",
         header: "Date",
-        cell: (info) => <span className="table-date mono">{info.getValue<string>()}</span>
+        cell: (info) => <span className="table-date mono">{info.getValue<string>()}</span>,
       },
       {
         accessorKey: "realmeye_max",
         header: "RealmEye Max",
-        cell: (info) => <span className="table-number mono">{numberFormatter(info.getValue<number | null>())}</span>
+        cell: (info) => <span className="table-number mono">{numberFormatter(info.getValue<number | null>())}</span>,
       },
       {
         accessorKey: "realmeye_min",
         header: "RealmEye Min",
-        cell: (info) => <span className="table-number mono">{numberFormatter(info.getValue<number | null>())}</span>
+        cell: (info) => <span className="table-number mono">{numberFormatter(info.getValue<number | null>())}</span>,
       },
       {
         accessorKey: "realmstock_max",
         header: "RealmStock Max",
-        cell: (info) => <span className="table-number mono">{numberFormatter(info.getValue<number | null>())}</span>
+        cell: (info) => <span className="table-number mono">{numberFormatter(info.getValue<number | null>())}</span>,
       },
       {
         accessorKey: "realmstock_min",
         header: "RealmStock Min",
-        cell: (info) => <span className="table-number mono">{numberFormatter(info.getValue<number | null>())}</span>
+        cell: (info) => <span className="table-number mono">{numberFormatter(info.getValue<number | null>())}</span>,
       },
       {
         accessorKey: "realmeye_delta",
@@ -91,12 +91,12 @@ export function DataTable({ rows }: DataTableProps) {
               {numberFormatter(value)}
             </span>
           );
-        }
+        },
       },
       {
         accessorKey: "launcher_loads",
         header: "Launcher Loads",
-        cell: (info) => <span className="table-number mono">{numberFormatter(info.getValue<number | null>())}</span>
+        cell: (info) => <span className="table-number mono">{numberFormatter(info.getValue<number | null>())}</span>,
       },
       {
         accessorKey: "launcher_delta",
@@ -114,8 +114,8 @@ export function DataTable({ rows }: DataTableProps) {
               {numberFormatter(value)}
             </span>
           );
-        }
-      }
+        },
+      },
     ],
     []
   );
@@ -125,7 +125,7 @@ export function DataTable({ rows }: DataTableProps) {
     columns,
     state: {
       sorting,
-      globalFilter
+      globalFilter,
     },
     onSortingChange: setSorting,
     onGlobalFilterChange: setGlobalFilter,
@@ -139,8 +139,12 @@ export function DataTable({ rows }: DataTableProps) {
       }
 
       const rawValue = row.getValue(columnId);
-      return String(rawValue ?? "").toLowerCase().includes(search);
-    }
+      const normalizedValue =
+        typeof rawValue === "string" || typeof rawValue === "number" || typeof rawValue === "boolean"
+          ? String(rawValue)
+          : "";
+      return normalizedValue.toLowerCase().includes(search);
+    },
   });
 
   const tableRows = table.getRowModel().rows;
@@ -149,7 +153,7 @@ export function DataTable({ rows }: DataTableProps) {
     count: tableRows.length,
     getScrollElement: () => viewportRef.current,
     estimateSize: () => 46,
-    overscan: 10
+    overscan: 10,
   });
 
   const onExport = () => {
@@ -245,7 +249,7 @@ export function DataTable({ rows }: DataTableProps) {
                     top: 0,
                     left: 0,
                     width: "100%",
-                    transform: `translateY(${virtualRow.start}px)`
+                    transform: `translateY(${virtualRow.start}px)`,
                   }}
                 >
                   {row.getVisibleCells().map((cell) => (

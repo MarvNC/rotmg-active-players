@@ -172,7 +172,9 @@ body.modal-open {
   font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
-  transition: border-color 130ms ease, background-color 130ms ease;
+  transition:
+    border-color 130ms ease,
+    background-color 130ms ease;
 }
 
 .topbar-link:hover {
@@ -197,7 +199,9 @@ body.modal-open {
   font-family: "Sora", sans-serif;
   font-weight: 600;
   cursor: pointer;
-  transition: border-color 130ms ease, background-color 130ms ease;
+  transition:
+    border-color 130ms ease,
+    background-color 130ms ease;
 }
 
 .theme-mode-button:hover {
@@ -233,7 +237,9 @@ body.modal-open {
   border-radius: var(--radius-md);
   background: linear-gradient(180deg, var(--stat-card-bg-start), var(--stat-card-bg-end));
   padding: 16px;
-  transition: border-color 160ms ease, transform 160ms ease;
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease;
   animation: card-enter 260ms ease both;
 }
 
@@ -258,7 +264,9 @@ body.modal-open {
 
 .with-icon svg {
   color: var(--brand-red);
-  transition: transform 140ms ease, color 140ms ease;
+  transition:
+    transform 140ms ease,
+    color 140ms ease;
 }
 
 .stat-card:hover .with-icon svg {
@@ -323,7 +331,9 @@ body.modal-open {
   font-weight: 600;
   letter-spacing: 0.02em;
   cursor: pointer;
-  transition: border-color 130ms ease, background-color 130ms ease;
+  transition:
+    border-color 130ms ease,
+    background-color 130ms ease;
 }
 
 .tab-button:hover {
@@ -360,7 +370,11 @@ body.modal-open {
   cursor: pointer;
   font-weight: 600;
   letter-spacing: 0.02em;
-  transition: color 130ms ease, border-color 130ms ease, background-color 130ms ease, box-shadow 130ms ease;
+  transition:
+    color 130ms ease,
+    border-color 130ms ease,
+    background-color 130ms ease,
+    box-shadow 130ms ease;
 }
 
 .range-pill:hover {
@@ -574,7 +588,9 @@ body.modal-open {
   gap: 6px;
   padding: 6px 10px;
   cursor: pointer;
-  transition: border-color 140ms ease, background-color 140ms ease;
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease;
   align-self: flex-start;
 }
 
@@ -597,7 +613,10 @@ body.modal-open {
   min-height: 30px;
   padding: 6px 12px;
   cursor: pointer;
-  transition: border-color 130ms ease, background-color 130ms ease, color 130ms ease;
+  transition:
+    border-color 130ms ease,
+    background-color 130ms ease,
+    color 130ms ease;
 }
 
 .chart-toggle-button:hover {

@@ -1,0 +1,7 @@
+dist
+node_modules
+data
+src/data/daily.json
+*.csv
+*.tsbuildinfo
+bun.lock

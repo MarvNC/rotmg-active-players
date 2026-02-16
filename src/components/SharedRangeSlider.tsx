@@ -32,7 +32,7 @@ export function SharedRangeSlider({ dates, range, onChange }: SharedRangeSliderP
         start: 0,
         end: 0,
         startPercent: 0,
-        endPercent: 100
+        endPercent: 100,
       };
     }
 
@@ -45,7 +45,7 @@ export function SharedRangeSlider({ dates, range, onChange }: SharedRangeSliderP
       start,
       end,
       startPercent: (start / denominator) * 100,
-      endPercent: (end / denominator) * 100
+      endPercent: (end / denominator) * 100,
     };
   }, [dates, range.end, range.start]);
 
@@ -57,7 +57,7 @@ export function SharedRangeSlider({ dates, range, onChange }: SharedRangeSliderP
     const nextStart = Math.min(nextStartRaw, bounds.end - 1);
     onChange({
       start: dates[nextStart] ?? dates[0],
-      end: dates[bounds.end] ?? dates[dates.length - 1]
+      end: dates[bounds.end] ?? dates[dates.length - 1],
     });
   };
 
@@ -65,7 +65,7 @@ export function SharedRangeSlider({ dates, range, onChange }: SharedRangeSliderP
     const nextEnd = Math.max(nextEndRaw, bounds.start + 1);
     onChange({
       start: dates[bounds.start] ?? dates[0],
-      end: dates[nextEnd] ?? dates[dates.length - 1]
+      end: dates[nextEnd] ?? dates[dates.length - 1],
     });
   };
 
@@ -97,7 +97,7 @@ export function SharedRangeSlider({ dates, range, onChange }: SharedRangeSliderP
 
       onChange({
         start: dates[nextStart] ?? dates[0],
-        end: dates[nextEnd] ?? dates[dates.length - 1]
+        end: dates[nextEnd] ?? dates[dates.length - 1],
       });
     };
 

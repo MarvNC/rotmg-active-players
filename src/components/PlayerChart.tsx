@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Download, Expand } from "lucide-react";
 import { toBlob } from "html-to-image";
 import uPlot from "uplot";
@@ -98,7 +98,7 @@ export function PlayerChart({
   showTitle = true,
   onPopOut,
   enableExport = false,
-  headerControls
+  headerControls,
 }: PlayerChartProps) {
   const chartShellRef = useRef<HTMLDivElement>(null);
   const hostRef = useRef<HTMLDivElement>(null);
@@ -107,13 +107,16 @@ export function PlayerChart({
   const [chartHeight, setChartHeight] = useState(height);
   const [isExporting, setIsExporting] = useState(false);
 
-  const resolveHeight = (width: number) => {
-    if (minHeightRatio == null) {
-      return height;
-    }
+  const resolveHeight = useCallback(
+    (width: number) => {
+      if (minHeightRatio == null) {
+        return height;
+      }
 
-    return Math.max(height, Math.floor(width * minHeightRatio));
-  };
+      return Math.max(height, Math.floor(width * minHeightRatio));
+    },
+    [height, minHeightRatio]
+  );
 
   const frameHeight = chartHeight + 18;
 
@@ -138,28 +141,28 @@ export function PlayerChart({
       height: initialHeight,
       padding: [20, 10, 10, 10],
       legend: {
-        show: false
+        show: false,
       },
       focus: {
-        alpha: 0.3
+        alpha: 0.3,
       },
       scales: {
         x: {
-          time: true
+          time: true,
         },
         y: {
-          auto: true
-        }
+          auto: true,
+        },
       },
       axes: [
         {
           stroke: theme === "dark" ? "#737373" : "#6b7280",
           space: 90,
           grid: {
-            show: false
+            show: false,
           },
           ticks: {
-            stroke: theme === "dark" ? "#262626" : "#e2e8f0"
+            stroke: theme === "dark" ? "#262626" : "#e2e8f0",
           },
           values: (u, splits) => {
             const xMin = u.scales.x.min ?? Number(splits[0] ?? 0);
@@ -174,44 +177,44 @@ export function PlayerChart({
                 ? formatAxisDateLabel(Number(split), rangeDays)
                 : ""
             );
-          }
+          },
         },
         {
           stroke: theme === "dark" ? "#737373" : "#6b7280",
           grid: {
             stroke: theme === "dark" ? "#262626" : "#e2e8f0",
-            width: 1
+            width: 1,
           },
           ticks: {
-            stroke: theme === "dark" ? "#262626" : "#e2e8f0"
+            stroke: theme === "dark" ? "#262626" : "#e2e8f0",
           },
           values: (_, splits) =>
             splits.map((split) =>
               Intl.NumberFormat("en-US", {
                 notation: "compact",
-                maximumFractionDigits: 1
+                maximumFractionDigits: 1,
               }).format(Number(split))
-            )
-        }
+            ),
+        },
       ],
       cursor: {
         lock: false,
         points: {
-          show: false
+          show: false,
         },
         drag: {
           x: false,
           y: false,
-          setScale: false
+          setScale: false,
         },
         sync: {
           key: syncKey,
-          setSeries: false
-        }
+          setSeries: false,
+        },
       },
       series: [
         {
-          label: "Date"
+          label: "Date",
         },
         {
           label: "Daily min",
@@ -219,8 +222,8 @@ export function PlayerChart({
           fill: "rgba(220,40,40,0)",
           spanGaps: true,
           points: {
-            show: false
-          }
+            show: false,
+          },
         },
         {
           label: "Daily max",
@@ -229,9 +232,9 @@ export function PlayerChart({
           fill: theme === "dark" ? "rgba(220,40,40,0.24)" : "rgba(220,40,40,0.2)",
           spanGaps: true,
           points: {
-            show: false
-          }
-        }
+            show: false,
+          },
+        },
       ],
       hooks: {
         setCursor: [
@@ -300,17 +303,13 @@ export function PlayerChart({
             const belowTop = anchorTop + gap;
 
             const tooltipTop =
-              aboveTop >= pad
-                ? aboveTop
-                : belowTop <= maxTop
-                  ? belowTop
-                  : Math.min(Math.max(aboveTop, pad), maxTop);
+              aboveTop >= pad ? aboveTop : belowTop <= maxTop ? belowTop : Math.min(Math.max(aboveTop, pad), maxTop);
 
             tooltip.style.transform = `translate(${Math.round(tooltipLeft)}px, ${Math.round(tooltipTop)}px)`;
             tooltip.style.opacity = "1";
-          }
-        ]
-      }
+          },
+        ],
+      },
     };
 
     const chart = new uPlot(options, data, host);
@@ -332,7 +331,7 @@ export function PlayerChart({
       chart.destroy();
       chartRef.current = null;
     };
-  }, [data, height, minHeightRatio, syncKey, theme, tooltipValueLabel]);
+  }, [data, resolveHeight, syncKey, theme, tooltipValueLabel]);
 
   useEffect(() => {
     if (!chartRef.current || data[0].length === 0) {
@@ -356,7 +355,7 @@ export function PlayerChart({
       const blob = await toBlob(chartShell, {
         cacheBust: true,
         pixelRatio: window.devicePixelRatio || 1,
-        filter: (node) => shouldIncludeExportNode(node)
+        filter: (node) => shouldIncludeExportNode(node),
       });
 
       if (!blob) {
@@ -407,7 +406,9 @@ export function PlayerChart({
                   type="button"
                   className="chart-popout-button"
                   data-export-exclude="true"
-                  onClick={exportChartAsPng}
+                  onClick={() => {
+                    void exportChartAsPng();
+                  }}
                   aria-label={`Export ${title} as PNG`}
                   disabled={isExporting}
                 >

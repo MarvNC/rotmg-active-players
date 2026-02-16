@@ -41,11 +41,24 @@ function appendRow(file: string, players: number): void {
   appendFileSync(file, `${time},${date},${players}\n`, "utf8");
 }
 
+function parseNonNegativeInteger(value: unknown): number | null {
+  if (typeof value === "number") {
+    return Number.isFinite(value) && value >= 0 ? Math.trunc(value) : null;
+  }
+
+  if (typeof value === "string") {
+    const parsed = Number.parseInt(value, 10);
+    return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
+  }
+
+  return null;
+}
+
 async function scrapeRealmStock(): Promise<number> {
   const response = await fetch("https://realmstock.network/Public/PlayersOnline", {
     headers: {
-      Accept: "application/json"
-    }
+      Accept: "application/json",
+    },
   });
 
   if (!response.ok) {
@@ -96,9 +109,7 @@ function parseHistogramValues(html: string): number[] {
     return [];
   }
 
-  parsedSeries.sort(
-    (a, b) => b.reduce((sum, value) => sum + value, 0) - a.reduce((sum, value) => sum + value, 0)
-  );
+  parsedSeries.sort((a, b) => b.reduce((sum, value) => sum + value, 0) - a.reduce((sum, value) => sum + value, 0));
 
   return parsedSeries[0] ?? [];
 }
@@ -107,8 +118,8 @@ async function scrapeRealmEye(): Promise<number> {
   const response = await fetch("https://www.realmeye.com/number-of-active-players-by-rank", {
     headers: {
       "User-Agent": "rotmg-active-players-bot/1.0",
-      Accept: "text/html"
-    }
+      Accept: "text/html",
+    },
   });
 
   if (!response.ok) {
@@ -129,8 +140,8 @@ async function scrapeImgurLauncher(): Promise<number> {
   const response = await fetch(`https://imgur.com/${IMGUR_POST_ID}`, {
     headers: {
       "User-Agent": "rotmg-active-players-bot/1.0",
-      Accept: "text/html"
-    }
+      Accept: "text/html",
+    },
   });
 
   if (!response.ok) {
@@ -147,23 +158,20 @@ async function scrapeImgurLauncher(): Promise<number> {
     }
   }
 
-  const apiResponse = await fetch(
-    `https://api.imgur.com/post/v1/media/${IMGUR_POST_ID}?include=media,account`,
-    {
-      headers: {
-        Authorization: `Client-ID ${IMGUR_ANON_CLIENT_ID}`,
-        Accept: "application/json"
-      }
-    }
-  );
+  const apiResponse = await fetch(`https://api.imgur.com/post/v1/media/${IMGUR_POST_ID}?include=media,account`, {
+    headers: {
+      Authorization: `Client-ID ${IMGUR_ANON_CLIENT_ID}`,
+      Accept: "application/json",
+    },
+  });
 
   if (!apiResponse.ok) {
     throw new Error(`Imgur API fallback failed with ${apiResponse.status}`);
   }
 
   const apiBody = (await apiResponse.json()) as { view_count?: unknown };
-  const views = Number.parseInt(String(apiBody.view_count ?? ""), 10);
-  if (!Number.isFinite(views) || views < 0) {
+  const views = parseNonNegativeInteger(apiBody.view_count);
+  if (views == null) {
     throw new Error("Imgur API response did not contain a numeric view_count");
   }
 
@@ -219,4 +227,4 @@ async function run(): Promise<void> {
   }
 }
 
-run();
+void run();

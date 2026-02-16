@@ -32,10 +32,7 @@ type LauncherRow = {
 };
 
 const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
-const REALMEYE_FALLBACK = resolve(
-  ROOT,
-  "ROTMG Players Active Players Over Time - RealmEyeData.csv"
-);
+const REALMEYE_FALLBACK = resolve(ROOT, "ROTMG Players Active Players Over Time - RealmEyeData.csv");
 const REALMEYE_FILE = resolve(ROOT, "data", "realmeye-full.csv");
 const REALMSTOCK_FILE = resolve(ROOT, "data", "realmstock-full.csv");
 const LAUNCHER_FILE = resolve(ROOT, "data", "launcher-full.csv");
@@ -55,7 +52,10 @@ function parseCsvRows(inputPath: string): Row[] {
   const rows: Row[] = [];
 
   for (const line of lines) {
-    const [_, rawDate, rawPlayers] = line.split(",", 3).map((part) => part.trim());
+    const columns = line.split(",", 3).map((part) => part.trim());
+    const rawDate = columns[1];
+    const rawPlayers = columns[2];
+
     if (!rawDate || !rawPlayers) {
       continue;
     }
@@ -191,11 +191,7 @@ function mergeDaily(
   realmstockDaily: Map<string, { min: number; max: number }>,
   launcherDailyLoads: Map<string, number | null>
 ): DailyAggregate[] {
-  const dates = new Set<string>([
-    ...realmeyeDaily.keys(),
-    ...realmstockDaily.keys(),
-    ...launcherDailyLoads.keys()
-  ]);
+  const dates = new Set<string>([...realmeyeDaily.keys(), ...realmstockDaily.keys(), ...launcherDailyLoads.keys()]);
 
   return Array.from(dates)
     .sort((a, b) => a.localeCompare(b))
@@ -210,7 +206,7 @@ function mergeDaily(
         realmeye_min: realmeye?.min ?? null,
         realmstock_max: realmstock?.max ?? null,
         realmstock_min: realmstock?.min ?? null,
-        launcher_loads: launcherLoads
+        launcher_loads: launcherLoads,
       };
     });
 }
@@ -226,7 +222,7 @@ function toCompactDaily(points: DailyAggregate[]): CompactDaily {
     b: points.map((point) => point.realmeye_min),
     c: points.map((point) => point.realmstock_max),
     e: points.map((point) => point.realmstock_min),
-    f: points.map((point) => point.launcher_loads)
+    f: points.map((point) => point.launcher_loads),
   };
 }
 

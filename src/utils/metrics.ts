@@ -27,12 +27,12 @@ export function buildStats(points: DailyPoint[]): StatsSummary {
 
   let allTimePeak: { value: number | null; date: string | null } = {
     value: null,
-    date: null
+    date: null,
   };
 
   let allTimeLow: { value: number | null; date: string | null } = {
     value: null,
-    date: null
+    date: null,
   };
 
   for (const point of points) {
@@ -57,7 +57,7 @@ export function buildStats(points: DailyPoint[]): StatsSummary {
     currentRealmeye: current,
     allTimePeak,
     allTimeLow,
-    lastUpdatedDate: points[latestIndex]?.date ?? null
+    lastUpdatedDate: points[latestIndex]?.date ?? null,
   };
 }
 
@@ -70,14 +70,8 @@ export function buildTableRows(points: DailyPoint[]): TableRow[] {
 
     return {
       ...point,
-      realmeye_delta:
-        current == null || previous == null
-          ? null
-          : current - previous,
-      launcher_delta:
-        currentLauncher == null || previousLauncher == null
-          ? null
-          : currentLauncher - previousLauncher
+      realmeye_delta: current == null || previous == null ? null : current - previous,
+      launcher_delta: currentLauncher == null || previousLauncher == null ? null : currentLauncher - previousLauncher,
     };
   });
 }

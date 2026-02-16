@@ -54,7 +54,7 @@ function offsetMillisAt(instant: Date, timeZone: string): number {
     day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
-    second: "2-digit"
+    second: "2-digit",
   });
 
   const parts = formatter.formatToParts(instant);
@@ -81,9 +81,7 @@ function offsetMillisAt(instant: Date, timeZone: string): number {
 }
 
 function nyLocalToUtc(localDateTime: string): { date: string; time: string } | null {
-  const match = localDateTime.match(
-    /^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?$/
-  );
+  const match = localDateTime.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
 
   if (!match) {
     return null;
@@ -119,7 +117,7 @@ function nyLocalToUtc(localDateTime: string): { date: string; time: string } | n
 
   return {
     date: converted.toISOString().slice(0, 10),
-    time: converted.toISOString().slice(11, 19)
+    time: converted.toISOString().slice(11, 19),
   };
 }
 
@@ -173,7 +171,7 @@ function run(): void {
 
       return {
         key: `${utc.date}T${utc.time}`,
-        line: `${utc.time},${utc.date},${row.views}`
+        line: `${utc.time},${utc.date},${row.views}`,
       };
     })
     .filter((entry): entry is { key: string; line: string } => entry !== null)

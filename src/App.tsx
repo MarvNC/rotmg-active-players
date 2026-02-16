@@ -19,18 +19,18 @@ type ResolvedTheme = "light" | "dark";
 const CHART_COPY = {
   realmeye: {
     title: "Active Players Over Time",
-    subtitle: "Amount of players seen in the past two weeks."
+    subtitle: "Amount of players seen in the past two weeks.",
   },
   realmstock: {
     title: "Max Online Players Over Time",
     subtitle: "Maximum number of players logged in at any point each day.",
-    smoothedSubtitle: "7-day rolling average of daily min and max live players."
+    smoothedSubtitle: "7-day rolling average of daily min and max live players.",
   },
   launcher: {
     title: "Launcher Loads Per Day",
     subtitle: "Total number of times the game launcher was opened each day.",
-    smoothedSubtitle: "7-day rolling average of total launcher loads per day."
-  }
+    smoothedSubtitle: "7-day rolling average of total launcher loads per day.",
+  },
 } as const;
 
 const SITE_URL = "https://rotmg-stats.maarv.dev/";
@@ -113,10 +113,7 @@ export default function App() {
   const realmstockSmoothedMin = useMemo(() => smoothWeekly(realmstockMin), [realmstockMin]);
   const realmstockSmoothedMax = useMemo(() => smoothWeekly(realmstockMax), [realmstockMax]);
 
-  const launcherSeries = useMemo(
-    () => filtered.filter((item) => item.launcher_loads != null),
-    [filtered]
-  );
+  const launcherSeries = useMemo(() => filtered.filter((item) => item.launcher_loads != null), [filtered]);
 
   const launcherDates = useMemo(() => launcherSeries.map((item) => item.date), [launcherSeries]);
   const launcherLoads = useMemo(() => launcherSeries.map((item) => item.launcher_loads), [launcherSeries]);
@@ -157,8 +154,7 @@ export default function App() {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
     const applyTheme = () => {
-      const nextTheme: ResolvedTheme =
-        themeMode === "system" ? (mediaQuery.matches ? "dark" : "light") : themeMode;
+      const nextTheme: ResolvedTheme = themeMode === "system" ? (mediaQuery.matches ? "dark" : "light") : themeMode;
 
       document.documentElement.dataset.theme = nextTheme;
       setResolvedTheme(nextTheme);
@@ -212,7 +208,7 @@ export default function App() {
   const expandedChartTitle =
     expandedChart === "realmeye"
       ? CHART_COPY.realmeye.title
-    : expandedChart === "realmstock"
+      : expandedChart === "realmstock"
         ? CHART_COPY.realmstock.title
         : expandedChart === "launcher"
           ? CHART_COPY.launcher.title
@@ -331,10 +327,8 @@ export default function App() {
               theme={resolvedTheme}
               range={range}
               syncKey="rotmg-sync"
-              headerControls={renderWeeklySmoothingToggle(
-                CHART_COPY.realmstock.title,
-                isRealmstockWeeklySmoothOn,
-                () => setIsRealmstockWeeklySmoothOn((current) => !current)
+              headerControls={renderWeeklySmoothingToggle(CHART_COPY.realmstock.title, isRealmstockWeeklySmoothOn, () =>
+                setIsRealmstockWeeklySmoothOn((current) => !current)
               )}
               onPopOut={() => setExpandedChart("realmstock")}
             />
@@ -350,10 +344,8 @@ export default function App() {
               theme={resolvedTheme}
               range={range}
               syncKey="rotmg-sync"
-              headerControls={renderWeeklySmoothingToggle(
-                CHART_COPY.launcher.title,
-                isLauncherWeeklySmoothOn,
-                () => setIsLauncherWeeklySmoothOn((current) => !current)
+              headerControls={renderWeeklySmoothingToggle(CHART_COPY.launcher.title, isLauncherWeeklySmoothOn, () =>
+                setIsLauncherWeeklySmoothOn((current) => !current)
               )}
               onPopOut={() => setExpandedChart("launcher")}
             />
@@ -363,11 +355,7 @@ export default function App() {
         )}
 
         {expandedChart != null && expandedChartTitle != null ? (
-          <div
-            className="chart-modal-backdrop"
-            role="presentation"
-            onClick={() => setExpandedChart(null)}
-          >
+          <div className="chart-modal-backdrop" role="presentation" onClick={() => setExpandedChart(null)}>
             <div
               className="chart-modal"
               role="dialog"
@@ -376,11 +364,7 @@ export default function App() {
               onClick={(event) => event.stopPropagation()}
             >
               <div className="chart-modal-header">
-                <button
-                  type="button"
-                  className="outline-button"
-                  onClick={() => setExpandedChart(null)}
-                >
+                <button type="button" className="outline-button" onClick={() => setExpandedChart(null)}>
                   <X size={14} aria-hidden="true" />
                   Close
                 </button>
@@ -429,11 +413,7 @@ export default function App() {
                         : launcherLoads
                 }
                 tooltipValueLabel={
-                  expandedChart === "realmstock"
-                    ? "players online"
-                    : expandedChart === "launcher"
-                      ? "loads"
-                      : "players"
+                  expandedChart === "realmstock" ? "players online" : expandedChart === "launcher" ? "loads" : "players"
                 }
                 theme={resolvedTheme}
                 range={range}
@@ -461,11 +441,7 @@ export default function App() {
       <footer className="app-footer">
         <p>
           Built by{" "}
-          <a
-            href={GITHUB_PROFILE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href={GITHUB_PROFILE_URL} target="_blank" rel="noopener noreferrer">
             MarvNC
           </a>
         </p>

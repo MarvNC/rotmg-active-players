@@ -9,10 +9,7 @@ type SourceRow = {
 };
 
 const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
-const SOURCE_FILE = resolve(
-  ROOT,
-  "ROTMG Players Active Players Over Time - RealmStockData.csv"
-);
+const SOURCE_FILE = resolve(ROOT, "ROTMG Players Active Players Over Time - RealmStockData.csv");
 const OUTPUT_FILE = resolve(ROOT, "data", "realmstock-full.csv");
 
 function pad(value: number): string {
@@ -37,7 +34,7 @@ function pstToUtc(date: string, time: string): { date: string; time: string } {
   const converted = new Date(iso);
   return {
     date: converted.toISOString().slice(0, 10),
-    time: converted.toISOString().slice(11, 19)
+    time: converted.toISOString().slice(11, 19),
   };
 }
 
@@ -71,7 +68,7 @@ function parseRows(csv: string): SourceRow[] {
     rows.push({
       time: normalizeTime(rawTime),
       date: rawDate,
-      players
+      players,
     });
   }
 
@@ -92,7 +89,7 @@ function run(): void {
       const utc = pstToUtc(row.date, row.time);
       return {
         key: `${utc.date}T${utc.time}`,
-        line: `${utc.time},${utc.date},${row.players}`
+        line: `${utc.time},${utc.date},${row.players}`,
       };
     })
     .filter((entry) => {
@@ -109,9 +106,7 @@ function run(): void {
   mkdirSync(resolve(ROOT, "data"), { recursive: true });
   writeFileSync(OUTPUT_FILE, `${normalized.join("\n")}\n`, "utf8");
 
-  process.stdout.write(
-    `Migrated ${rows.length} RealmStock rows to ${normalized.length} UTC rows.\n`
-  );
+  process.stdout.write(`Migrated ${rows.length} RealmStock rows to ${normalized.length} UTC rows.\n`);
 }
 
 run();

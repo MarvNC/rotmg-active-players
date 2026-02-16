@@ -9,7 +9,7 @@ const sample: DailyPoint[] = [
     realmeye_min: 90,
     realmstock_max: 20,
     realmstock_min: 10,
-    launcher_loads: null
+    launcher_loads: null,
   },
   {
     date: "2026-01-02",
@@ -17,7 +17,7 @@ const sample: DailyPoint[] = [
     realmeye_min: 120,
     realmstock_max: 22,
     realmstock_min: 11,
-    launcher_loads: 1000
+    launcher_loads: 1000,
   },
   {
     date: "2026-01-03",
@@ -25,8 +25,8 @@ const sample: DailyPoint[] = [
     realmeye_min: 100,
     realmstock_max: null,
     realmstock_min: null,
-    launcher_loads: 1200
-  }
+    launcher_loads: 1200,
+  },
 ];
 
 describe("buildStats", () => {

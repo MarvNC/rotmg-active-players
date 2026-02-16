@@ -10,10 +10,7 @@ type SourceRow = {
 };
 
 const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
-const SOURCE_FILE = resolve(
-  ROOT,
-  "ROTMG Players Active Players Over Time - RealmEyeData.csv"
-);
+const SOURCE_FILE = resolve(ROOT, "ROTMG Players Active Players Over Time - RealmEyeData.csv");
 const OUTPUT_FILE = resolve(ROOT, "data", "realmeye-full.csv");
 
 function pad(value: number): string {
@@ -38,7 +35,7 @@ function pstToUtc(date: string, time: string): { date: string; time: string } {
   const converted = new Date(iso);
   return {
     date: converted.toISOString().slice(0, 10),
-    time: converted.toISOString().slice(11, 19)
+    time: converted.toISOString().slice(11, 19),
   };
 }
 
@@ -94,7 +91,7 @@ function parseRows(csv: string): SourceRow[] {
       time: normalizeTime(rawTime),
       date: rawDate,
       players: correctedPlayers(players, notes),
-      notes
+      notes,
     });
   }
 
@@ -115,7 +112,7 @@ function run(): void {
       const utc = pstToUtc(row.date, row.time);
       return {
         key: `${utc.date}T${utc.time}`,
-        line: `${utc.time},${utc.date},${row.players}`
+        line: `${utc.time},${utc.date},${row.players}`,
       };
     })
     .filter((entry) => {
@@ -137,9 +134,7 @@ function run(): void {
     writeFileSync(realmstockPath, "", "utf8");
   }
 
-  process.stdout.write(
-    `Migrated ${rows.length} rows from source sheet to ${normalized.length} UTC rows.\n`
-  );
+  process.stdout.write(`Migrated ${rows.length} rows from source sheet to ${normalized.length} UTC rows.\n`);
 }
 
 run();
