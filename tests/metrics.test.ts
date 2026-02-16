@@ -27,11 +27,13 @@ const sample: DailyPoint[] = [
 ];
 
 describe("buildStats", () => {
-  test("computes current and all-time peak", () => {
+  test("computes current, all-time peak, and all-time low", () => {
     const stats = buildStats(sample);
     expect(stats.currentRealmeye).toBe(110);
     expect(stats.allTimePeak.value).toBe(130);
     expect(stats.allTimePeak.date).toBe("2026-01-02");
+    expect(stats.allTimeLow.value).toBe(90);
+    expect(stats.allTimeLow.date).toBe("2026-01-01");
     expect(stats.lastUpdatedDate).toBe("2026-01-03");
   });
 });

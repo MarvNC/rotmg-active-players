@@ -20,6 +20,27 @@ function formatDateLabel(unixSeconds: number): string {
   return new Date(unixSeconds * 1000).toISOString().slice(0, 10);
 }
 
+function formatAxisDateLabel(unixSeconds: number, rangeDays: number): string {
+  const date = new Date(unixSeconds * 1000);
+  const year = date.getUTCFullYear();
+  const month = date.getUTCMonth() + 1;
+  const day = date.getUTCDate();
+
+  if (rangeDays > 365 * 3) {
+    return `${year}`;
+  }
+
+  if (rangeDays > 365) {
+    return `${year}-${String(month).padStart(2, "0")}`;
+  }
+
+  if (rangeDays > 120) {
+    return `${month}/${day}`;
+  }
+
+  return `${month}/${day}`;
+}
+
 function formatPlayers(value: number | null): string {
   if (value == null) {
     return "-";
@@ -65,13 +86,27 @@ export function PlayerChart({ title, dates, minValues, maxValues, range, syncKey
       axes: [
         {
           stroke: "#737373",
+          space: 90,
           grid: {
             show: false
           },
           ticks: {
             stroke: "#262626"
           },
-          values: (_, splits) => splits.map((split) => formatDateLabel(Number(split)))
+          values: (u, splits) => {
+            const xMin = u.scales.x.min ?? Number(splits[0] ?? 0);
+            const xMax = u.scales.x.max ?? Number(splits[splits.length - 1] ?? 0);
+            const rangeDays = Math.max(1, (xMax - xMin) / 86400);
+            const targetLabelWidth = rangeDays > 365 * 3 ? 42 : rangeDays > 365 ? 80 : 58;
+            const maxLabels = Math.max(2, Math.floor(u.bbox.width / targetLabelWidth));
+            const step = Math.max(1, Math.ceil(splits.length / maxLabels));
+
+            return splits.map((split, index) =>
+              index === 0 || index === splits.length - 1 || index % step === 0
+                ? formatAxisDateLabel(Number(split), rangeDays)
+                : ""
+            );
+          }
         },
         {
           stroke: "#737373",

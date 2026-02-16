@@ -253,6 +253,12 @@ body {
   border-radius: 999px;
   transform: translateY(-50%);
   background: linear-gradient(90deg, rgba(220, 40, 40, 0.35), rgba(220, 40, 40, 0.8));
+  cursor: grab;
+  touch-action: none;
+}
+
+.timeline-track-active:active {
+  cursor: grabbing;
 }
 
 .timeline-thumb {

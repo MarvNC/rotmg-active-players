@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useRef, type PointerEvent as ReactPointerEvent } from "react";
 import type { DateRange } from "../types";
 
 type SharedRangeSliderProps = {
@@ -23,6 +23,8 @@ function findEndIndex(dates: string[], target: string): number {
 }
 
 export function SharedRangeSlider({ dates, range, onChange }: SharedRangeSliderProps) {
+  const sliderRef = useRef<HTMLDivElement>(null);
+
   const bounds = useMemo(() => {
     if (dates.length <= 1) {
       return {
@@ -66,6 +68,53 @@ export function SharedRangeSlider({ dates, range, onChange }: SharedRangeSliderP
     });
   };
 
+  const onTrackPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const wrap = sliderRef.current;
+    if (!wrap) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const totalSteps = dates.length - 1;
+    const currentWindow = bounds.end - bounds.start;
+    const maxStart = totalSteps - currentWindow;
+
+    if (totalSteps <= 0 || maxStart < 0) {
+      return;
+    }
+
+    const startX = event.clientX;
+    const baseStart = bounds.start;
+    const width = Math.max(wrap.clientWidth, 1);
+
+    const updateFromClientX = (clientX: number) => {
+      const deltaPx = clientX - startX;
+      const deltaStep = Math.round((deltaPx / width) * totalSteps);
+      const nextStart = Math.min(Math.max(baseStart + deltaStep, 0), maxStart);
+      const nextEnd = nextStart + currentWindow;
+
+      onChange({
+        start: dates[nextStart] ?? dates[0],
+        end: dates[nextEnd] ?? dates[dates.length - 1]
+      });
+    };
+
+    const handleMove = (moveEvent: PointerEvent) => {
+      updateFromClientX(moveEvent.clientX);
+    };
+
+    const handleStop = () => {
+      window.removeEventListener("pointermove", handleMove);
+      window.removeEventListener("pointerup", handleStop);
+      window.removeEventListener("pointercancel", handleStop);
+    };
+
+    window.addEventListener("pointermove", handleMove);
+    window.addEventListener("pointerup", handleStop);
+    window.addEventListener("pointercancel", handleStop);
+  };
+
   return (
     <section className="panel timeline-panel" aria-label="Global chart range slider">
       <div className="timeline-header">
@@ -77,11 +126,12 @@ export function SharedRangeSlider({ dates, range, onChange }: SharedRangeSliderP
         </p>
       </div>
 
-      <div className="timeline-slider-wrap">
+      <div className="timeline-slider-wrap" ref={sliderRef}>
         <div className="timeline-track" aria-hidden="true" />
         <div
           className="timeline-track-active"
           style={{ left: `${bounds.startPercent}%`, width: `${bounds.endPercent - bounds.startPercent}%` }}
+          onPointerDown={onTrackPointerDown}
           aria-hidden="true"
         />
 

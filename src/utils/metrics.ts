@@ -3,10 +3,7 @@ import type { DailyPoint } from "../types";
 export type StatsSummary = {
   currentRealmeye: number | null;
   allTimePeak: { value: number | null; date: string | null };
-  trend30d: {
-    absolute: number | null;
-    percent: number | null;
-  };
+  allTimeLow: { value: number | null; date: string | null };
   lastUpdatedDate: string | null;
 };
 
@@ -32,6 +29,11 @@ export function buildStats(points: DailyPoint[]): StatsSummary {
     date: null
   };
 
+  let allTimeLow: { value: number | null; date: string | null } = {
+    value: null,
+    date: null
+  };
+
   for (const point of points) {
     if (point.realmeye_max == null) {
       continue;
@@ -40,28 +42,20 @@ export function buildStats(points: DailyPoint[]): StatsSummary {
     if (allTimePeak.value == null || point.realmeye_max > allTimePeak.value) {
       allTimePeak = { value: point.realmeye_max, date: point.date };
     }
+
+    if (point.realmeye_min != null) {
+      if (allTimeLow.value == null || point.realmeye_min < allTimeLow.value) {
+        allTimeLow = { value: point.realmeye_min, date: point.date };
+      }
+    }
   }
 
   const latestIndex = points.length - 1;
-  const baselineIndex = Math.max(0, latestIndex - 30);
-  const latest = points[latestIndex]?.realmeye_max ?? null;
-  const baseline = points[baselineIndex]?.realmeye_max ?? null;
-
-  let absolute: number | null = null;
-  let percent: number | null = null;
-
-  if (latest != null && baseline != null) {
-    absolute = latest - baseline;
-    percent = baseline === 0 ? null : (absolute / baseline) * 100;
-  }
 
   return {
     currentRealmeye: current,
     allTimePeak,
-    trend30d: {
-      absolute,
-      percent
-    },
+    allTimeLow,
     lastUpdatedDate: points[latestIndex]?.date ?? null
   };
 }
