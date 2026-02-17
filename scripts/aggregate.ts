@@ -31,6 +31,11 @@ type LauncherRow = {
   views: number;
 };
 
+type LauncherPoint = {
+  timestampMs: number;
+  views: number;
+};
+
 const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const REALMEYE_FALLBACK = resolve(ROOT, "ROTMG Players Active Players Over Time - RealmEyeData.csv");
 const REALMEYE_FILE = resolve(ROOT, "data", "realmeye-full.csv");
@@ -38,6 +43,7 @@ const REALMSTOCK_FILE = resolve(ROOT, "data", "realmstock-full.csv");
 const LAUNCHER_FILE = resolve(ROOT, "data", "launcher-full.csv");
 const OUTPUT_FILE = resolve(ROOT, "src", "data", "daily.json");
 const LAUNCHER_MIN_DATE = "2024-07-03";
+const MAX_INTERPOLATION_GAP_HOURS = 48;
 
 function parseCsvRows(inputPath: string): Row[] {
   if (!existsSync(inputPath)) {
@@ -130,57 +136,134 @@ function parseLauncherRows(inputPath: string): LauncherRow[] {
   return rows;
 }
 
-function daysBetween(previousDate: string, nextDate: string): number {
-  const previous = Date.parse(`${previousDate}T00:00:00Z`);
-  const next = Date.parse(`${nextDate}T00:00:00Z`);
-  const msPerDay = 24 * 60 * 60 * 1000;
-  return Math.round((next - previous) / msPerDay);
+function dateStartUtcMs(date: string): number {
+  return Date.parse(`${date}T00:00:00Z`);
 }
 
-function aggregateLauncherLoads(rows: LauncherRow[]): Map<string, number | null> {
-  const dailyMax = new Map<string, number>();
+function formatUtcDate(timestampMs: number): string {
+  return new Date(timestampMs).toISOString().slice(0, 10);
+}
+
+function normalizeLauncherPoints(rows: LauncherRow[]): LauncherPoint[] {
+  const byTimestamp = new Map<number, number>();
 
   for (const row of rows) {
     if (row.date < LAUNCHER_MIN_DATE) {
       continue;
     }
 
-    const existing = dailyMax.get(row.date);
+    const timestampMs = Date.parse(`${row.date}T${row.time}Z`);
+    if (!Number.isFinite(timestampMs)) {
+      continue;
+    }
+
+    const existing = byTimestamp.get(timestampMs);
     if (existing == null || row.views > existing) {
-      dailyMax.set(row.date, row.views);
+      byTimestamp.set(timestampMs, row.views);
     }
   }
 
-  const dates = Array.from(dailyMax.keys()).sort((a, b) => a.localeCompare(b));
+  return Array.from(byTimestamp.entries())
+    .map(([timestampMs, views]) => ({ timestampMs, views }))
+    .sort((a, b) => a.timestampMs - b.timestampMs);
+}
+
+function interpolateLauncherViewsAt(points: LauncherPoint[], targetTimestampMs: number): number | null {
+  if (points.length === 0) {
+    return null;
+  }
+
+  const first = points[0];
+  const last = points[points.length - 1];
+  if (!first || !last) {
+    return null;
+  }
+
+  if (targetTimestampMs < first.timestampMs || targetTimestampMs > last.timestampMs) {
+    return null;
+  }
+
+  let low = 0;
+  let high = points.length - 1;
+
+  while (low <= high) {
+    const mid = Math.floor((low + high) / 2);
+    const point = points[mid];
+    if (!point) {
+      break;
+    }
+
+    if (point.timestampMs === targetTimestampMs) {
+      return point.views;
+    }
+
+    if (point.timestampMs < targetTimestampMs) {
+      low = mid + 1;
+    } else {
+      high = mid - 1;
+    }
+  }
+
+  const previous = points[high];
+  const next = points[low];
+
+  if (!previous || !next) {
+    return null;
+  }
+
+  const spanMs = next.timestampMs - previous.timestampMs;
+  if (spanMs <= 0) {
+    return null;
+  }
+
+  const maxGapMs = MAX_INTERPOLATION_GAP_HOURS * 60 * 60 * 1000;
+  if (spanMs > maxGapMs) {
+    return null;
+  }
+
+  const spanViews = next.views - previous.views;
+  if (spanViews < 0) {
+    return null;
+  }
+
+  const ratio = (targetTimestampMs - previous.timestampMs) / spanMs;
+  return previous.views + spanViews * ratio;
+}
+
+function aggregateLauncherLoads(rows: LauncherRow[]): Map<string, number | null> {
+  const points = normalizeLauncherPoints(rows);
   const dailyLoads = new Map<string, number | null>();
 
-  for (let index = 0; index < dates.length; index += 1) {
-    const currentDate = dates[index];
-    const currentMax = dailyMax.get(currentDate);
+  if (points.length < 2) {
+    return dailyLoads;
+  }
 
-    if (currentMax == null) {
+  const firstTimestampMs = points[0]?.timestampMs;
+  const lastTimestampMs = points[points.length - 1]?.timestampMs;
+  if (firstTimestampMs == null || lastTimestampMs == null) {
+    return dailyLoads;
+  }
+
+  const msPerDay = 24 * 60 * 60 * 1000;
+  let dayStartMs = dateStartUtcMs(LAUNCHER_MIN_DATE);
+
+  while (dayStartMs + msPerDay <= lastTimestampMs) {
+    const date = formatUtcDate(dayStartMs);
+    const dayEndMs = dayStartMs + msPerDay;
+
+    const startViews = interpolateLauncherViewsAt(points, dayStartMs);
+    const endViews = interpolateLauncherViewsAt(points, dayEndMs);
+
+    if (startViews == null || endViews == null) {
+      dailyLoads.set(date, null);
+      dayStartMs = dayEndMs;
       continue;
     }
 
-    if (index === 0) {
-      dailyLoads.set(currentDate, null);
-      continue;
-    }
+    const delta = endViews - startViews;
+    dailyLoads.set(date, delta >= 0 ? Math.round(delta) : null);
 
-    const previousDate = dates[index - 1];
-    const previousMax = dailyMax.get(previousDate);
-    if (previousMax == null) {
-      dailyLoads.set(currentDate, null);
-      continue;
-    }
-
-    if (daysBetween(previousDate, currentDate) !== 1) {
-      dailyLoads.set(currentDate, null);
-      continue;
-    }
-
-    const loads = currentMax - previousMax;
-    dailyLoads.set(currentDate, loads >= 0 ? loads : null);
+    dayStartMs = dayEndMs;
   }
 
   return dailyLoads;
