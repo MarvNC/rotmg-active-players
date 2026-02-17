@@ -22,8 +22,9 @@ const CSV_HEADERS = [
   "realmeye_min",
   "realmstock_max",
   "realmstock_min",
-  "realmeye_delta",
   "launcher_loads",
+  "realmeye_delta",
+  "realmstock_delta",
   "launcher_delta",
 ] as const;
 
@@ -76,6 +77,11 @@ export function DataTable({ rows }: DataTableProps) {
         cell: (info) => <span className="table-number mono">{numberFormatter(info.getValue<number | null>())}</span>,
       },
       {
+        accessorKey: "launcher_loads",
+        header: "Launcher Loads",
+        cell: (info) => <span className="table-number mono">{numberFormatter(info.getValue<number | null>())}</span>,
+      },
+      {
         accessorKey: "realmeye_delta",
         header: "RealmEye Delta",
         cell: (info) => {
@@ -94,9 +100,22 @@ export function DataTable({ rows }: DataTableProps) {
         },
       },
       {
-        accessorKey: "launcher_loads",
-        header: "Launcher Loads",
-        cell: (info) => <span className="table-number mono">{numberFormatter(info.getValue<number | null>())}</span>,
+        accessorKey: "realmstock_delta",
+        header: "RealmStock Delta",
+        cell: (info) => {
+          const value = info.getValue<number | null>();
+          if (value == null) {
+            return <span className="table-number mono">-</span>;
+          }
+
+          const className = value >= 0 ? "delta-pill positive" : "delta-pill negative";
+          return (
+            <span className={className}>
+              {value >= 0 ? "+" : ""}
+              {numberFormatter(value)}
+            </span>
+          );
+        },
       },
       {
         accessorKey: "launcher_delta",
@@ -211,7 +230,7 @@ export function DataTable({ rows }: DataTableProps) {
 
       <div
         className="data-grid"
-        style={{ "--table-columns": "130px 150px 150px 160px 160px 160px 160px 160px" } as CSSProperties}
+        style={{ "--table-columns": "120px 136px 136px 146px 146px 138px 138px 138px 138px" } as CSSProperties}
       >
         <div className="data-grid-row data-grid-header" role="row">
           {table.getFlatHeaders().map((header) => {
