@@ -13,8 +13,10 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  scrape:
+  prep:
     runs-on: ubuntu-latest
+    outputs:
+      target_tag: ${{ steps.resolve.outputs.target_tag }}
 
     steps:
       - name: Checkout
@@ -29,6 +31,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Resolve release tags
+        id: resolve
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -41,6 +44,7 @@ jobs:
 
           echo "TARGET_TAG=$TARGET_TAG" >> "$GITHUB_ENV"
           echo "SOURCE_TAG=$SOURCE_TAG" >> "$GITHUB_ENV"
+          echo "target_tag=$TARGET_TAG" >> "$GITHUB_OUTPUT"
           echo "Using source release: $SOURCE_TAG"
           echo "Using target release: $TARGET_TAG"
 
@@ -50,14 +54,97 @@ jobs:
         run: |
           mkdir -p data
           gh release download "$SOURCE_TAG" -R "${{ github.repository }}" -D data -p "realmeye-full.csv" -p "realmstock-full.csv" -p "launcher-full.csv" || true
+          [ -f data/realmeye-full.csv ] || : > data/realmeye-full.csv
+          [ -f data/realmstock-full.csv ] || : > data/realmstock-full.csv
+          [ -f data/launcher-full.csv ] || : > data/launcher-full.csv
 
-      - name: Scrape latest values
-        run: bun run scrape
+      - name: Upload baseline CSV artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseline-csv
+          path: data/*.csv
+
+  scrape:
+    needs: prep
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - source: realmeye
+            file: data/realmeye-full.csv
+          - source: realmstock
+            file: data/realmstock-full.csv
+          - source: launcher
+            file: data/launcher-full.csv
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Download baseline CSV artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: baseline-csv
+          path: .
+
+      - name: Scrape ${{ matrix.source }} (strict)
+        run: bun run scripts/scrape.ts --source "${{ matrix.source }}" --strict
+
+      - name: Upload updated ${{ matrix.source }} CSV
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: csv-${{ matrix.source }}
+          path: ${{ matrix.file }}
+          if-no-files-found: ignore
+
+  finalize:
+    if: always()
+    needs:
+      - prep
+      - scrape
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Download baseline CSV artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: baseline-csv
+          path: .
+
+      - name: Download updated CSV artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: csv-*
+          merge-multiple: true
+          path: .
 
       - name: Upload CSV assets
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          TARGET_TAG="${{ needs.prep.outputs.target_tag }}"
           if ! gh release view "$TARGET_TAG" -R "${{ github.repository }}" > /dev/null 2>&1; then
             gh release create "$TARGET_TAG" -R "${{ github.repository }}" --title "Data $TARGET_TAG" --notes "Automated daily data release."
           fi
