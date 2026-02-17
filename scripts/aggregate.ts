@@ -5,18 +5,14 @@ import { fileURLToPath } from "node:url";
 type DailyAggregate = {
   date: string;
   realmeye_max: number | null;
-  realmeye_min: number | null;
   realmstock_max: number | null;
-  realmstock_min: number | null;
   launcher_loads: number | null;
 };
 
 type CompactDaily = {
   d: string[];
   a: Array<number | null>;
-  b: Array<number | null>;
   c: Array<number | null>;
-  e: Array<number | null>;
   f: Array<number | null>;
 };
 
@@ -81,21 +77,14 @@ function parseCsvRows(inputPath: string): Row[] {
   return rows;
 }
 
-function aggregateByDate(rows: Row[]): Map<string, { min: number; max: number }> {
-  const daily = new Map<string, { min: number; max: number }>();
+function aggregateMaxByDate(rows: Row[]): Map<string, number> {
+  const daily = new Map<string, number>();
 
   for (const row of rows) {
     const existing = daily.get(row.date);
-    if (!existing) {
-      daily.set(row.date, { min: row.players, max: row.players });
+    if (existing == null || row.players > existing) {
+      daily.set(row.date, row.players);
       continue;
-    }
-
-    if (row.players < existing.min) {
-      existing.min = row.players;
-    }
-    if (row.players > existing.max) {
-      existing.max = row.players;
     }
   }
 
@@ -270,8 +259,8 @@ function aggregateLauncherLoads(rows: LauncherRow[]): Map<string, number | null>
 }
 
 function mergeDaily(
-  realmeyeDaily: Map<string, { min: number; max: number }>,
-  realmstockDaily: Map<string, { min: number; max: number }>,
+  realmeyeDaily: Map<string, number>,
+  realmstockDaily: Map<string, number>,
   launcherDailyLoads: Map<string, number | null>
 ): DailyAggregate[] {
   const dates = new Set<string>([...realmeyeDaily.keys(), ...realmstockDaily.keys(), ...launcherDailyLoads.keys()]);
@@ -285,10 +274,8 @@ function mergeDaily(
 
       return {
         date,
-        realmeye_max: realmeye?.max ?? null,
-        realmeye_min: realmeye?.min ?? null,
-        realmstock_max: realmstock?.max ?? null,
-        realmstock_min: realmstock?.min ?? null,
+        realmeye_max: realmeye ?? null,
+        realmstock_max: realmstock ?? null,
         launcher_loads: launcherLoads,
       };
     });
@@ -302,9 +289,7 @@ function toCompactDaily(points: DailyAggregate[]): CompactDaily {
   return {
     d: points.map((point) => compactDate(point.date)),
     a: points.map((point) => point.realmeye_max),
-    b: points.map((point) => point.realmeye_min),
     c: points.map((point) => point.realmstock_max),
-    e: points.map((point) => point.realmstock_min),
     f: points.map((point) => point.launcher_loads),
   };
 }
@@ -316,8 +301,8 @@ function run(): void {
   const launcherRows = parseLauncherRows(LAUNCHER_FILE);
 
   const merged = mergeDaily(
-    aggregateByDate(realmeyeRows),
-    aggregateByDate(realmstockRows),
+    aggregateMaxByDate(realmeyeRows),
+    aggregateMaxByDate(realmstockRows),
     aggregateLauncherLoads(launcherRows)
   );
   const compact = toCompactDaily(merged);

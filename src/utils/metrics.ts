@@ -47,10 +47,8 @@ export function buildStats(points: DailyPoint[]): StatsSummary {
       allTimePeak = { value: point.realmeye_max, date: point.date };
     }
 
-    if (point.realmeye_min != null) {
-      if (allTimeLow.value == null || point.realmeye_min < allTimeLow.value) {
-        allTimeLow = { value: point.realmeye_min, date: point.date };
-      }
+    if (allTimeLow.value == null || point.realmeye_max < allTimeLow.value) {
+      allTimeLow = { value: point.realmeye_max, date: point.date };
     }
   }
 

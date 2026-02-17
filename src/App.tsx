@@ -24,7 +24,7 @@ const CHART_COPY = {
   realmstock: {
     title: "Max Online Players Over Time",
     subtitle: "Maximum number of players logged in at any point each day.",
-    smoothedSubtitle: "7-day rolling average of daily min and max live players.",
+    smoothedSubtitle: "7-day rolling average of daily max live players.",
   },
   launcher: {
     title: "Launcher Loads Per Day",
@@ -93,24 +93,15 @@ export default function App() {
 
   const tableRows = useMemo(() => buildTableRows(filtered), [filtered]);
 
-  const realmeyeSeries = useMemo(
-    () => filtered.filter((item) => item.realmeye_min != null && item.realmeye_max != null),
-    [filtered]
-  );
+  const realmeyeSeries = useMemo(() => filtered.filter((item) => item.realmeye_max != null), [filtered]);
 
-  const realmstockSeries = useMemo(
-    () => filtered.filter((item) => item.realmstock_min != null && item.realmstock_max != null),
-    [filtered]
-  );
+  const realmstockSeries = useMemo(() => filtered.filter((item) => item.realmstock_max != null), [filtered]);
 
   const realmeyeDates = useMemo(() => realmeyeSeries.map((item) => item.date), [realmeyeSeries]);
-  const realmeyeMin = useMemo(() => realmeyeSeries.map((item) => item.realmeye_min), [realmeyeSeries]);
   const realmeyeMax = useMemo(() => realmeyeSeries.map((item) => item.realmeye_max), [realmeyeSeries]);
 
   const realmstockDates = useMemo(() => realmstockSeries.map((item) => item.date), [realmstockSeries]);
-  const realmstockMin = useMemo(() => realmstockSeries.map((item) => item.realmstock_min), [realmstockSeries]);
   const realmstockMax = useMemo(() => realmstockSeries.map((item) => item.realmstock_max), [realmstockSeries]);
-  const realmstockSmoothedMin = useMemo(() => smoothWeekly(realmstockMin), [realmstockMin]);
   const realmstockSmoothedMax = useMemo(() => smoothWeekly(realmstockMax), [realmstockMax]);
 
   const launcherSeries = useMemo(() => filtered.filter((item) => item.launcher_loads != null), [filtered]);
@@ -308,7 +299,6 @@ export default function App() {
               subtitle={CHART_COPY.realmeye.subtitle}
               shareUrl={SITE_URL}
               dates={realmeyeDates}
-              minValues={realmeyeMin}
               maxValues={realmeyeMax}
               theme={resolvedTheme}
               range={range}
@@ -321,7 +311,6 @@ export default function App() {
               subtitle={realmstockSubtitle}
               shareUrl={SITE_URL}
               dates={realmstockDates}
-              minValues={isRealmstockWeeklySmoothOn ? realmstockSmoothedMin : realmstockMin}
               maxValues={isRealmstockWeeklySmoothOn ? realmstockSmoothedMax : realmstockMax}
               tooltipValueLabel="players online"
               theme={resolvedTheme}
@@ -338,7 +327,6 @@ export default function App() {
               subtitle={launcherSubtitle}
               shareUrl={SITE_URL}
               dates={launcherDates}
-              minValues={isLauncherWeeklySmoothOn ? launcherSmoothedLoads : launcherLoads}
               maxValues={isLauncherWeeklySmoothOn ? launcherSmoothedLoads : launcherLoads}
               tooltipValueLabel="loads"
               theme={resolvedTheme}
@@ -389,17 +377,6 @@ export default function App() {
                     : expandedChart === "realmstock"
                       ? realmstockDates
                       : launcherDates
-                }
-                minValues={
-                  expandedChart === "realmeye"
-                    ? realmeyeMin
-                    : expandedChart === "realmstock"
-                      ? isRealmstockWeeklySmoothOn
-                        ? realmstockSmoothedMin
-                        : realmstockMin
-                      : isLauncherWeeklySmoothOn
-                        ? launcherSmoothedLoads
-                        : launcherLoads
                 }
                 maxValues={
                   expandedChart === "realmeye"

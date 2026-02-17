@@ -10,7 +10,6 @@ type PlayerChartProps = {
   subtitle?: string;
   shareUrl?: string;
   dates: string[];
-  minValues: Array<number | null>;
   maxValues: Array<number | null>;
   tooltipValueLabel?: string;
   theme: "light" | "dark";
@@ -87,7 +86,6 @@ export function PlayerChart({
   subtitle,
   shareUrl,
   dates,
-  minValues,
   maxValues,
   tooltipValueLabel = "players",
   theme,
@@ -122,8 +120,8 @@ export function PlayerChart({
 
   const data = useMemo<AlignedData>(() => {
     const x = dates.map(toUnixDay);
-    return [x, minValues, maxValues];
-  }, [dates, minValues, maxValues]);
+    return [x, maxValues];
+  }, [dates, maxValues]);
 
   useEffect(() => {
     const host = hostRef.current;
@@ -217,16 +215,7 @@ export function PlayerChart({
           label: "Date",
         },
         {
-          label: "Daily min",
-          stroke: "rgba(220,40,40,0)",
-          fill: "rgba(220,40,40,0)",
-          spanGaps: true,
-          points: {
-            show: false,
-          },
-        },
-        {
-          label: "Daily max",
+          label: "Daily value",
           stroke: "#dc2828",
           width: 3,
           fill: theme === "dark" ? "rgba(220,40,40,0.24)" : "rgba(220,40,40,0.2)",
@@ -251,7 +240,7 @@ export function PlayerChart({
             }
 
             const xSeries = chart.data[0] as number[];
-            const maxSeries = chart.data[2] as Array<number | null>;
+            const maxSeries = chart.data[1] as Array<number | null>;
 
             const xValue = xSeries[index];
             const yValue = maxSeries[index] ?? null;

@@ -6,25 +6,19 @@ const sample: DailyPoint[] = [
   {
     date: "2026-01-01",
     realmeye_max: 100,
-    realmeye_min: 90,
     realmstock_max: 20,
-    realmstock_min: 10,
     launcher_loads: null,
   },
   {
     date: "2026-01-02",
     realmeye_max: 130,
-    realmeye_min: 120,
     realmstock_max: 22,
-    realmstock_min: 11,
     launcher_loads: 1000,
   },
   {
     date: "2026-01-03",
     realmeye_max: 110,
-    realmeye_min: 100,
     realmstock_max: null,
-    realmstock_min: null,
     launcher_loads: 1200,
   },
 ];
@@ -35,7 +29,7 @@ describe("buildStats", () => {
     expect(stats.currentRealmeye).toBe(110);
     expect(stats.allTimePeak.value).toBe(130);
     expect(stats.allTimePeak.date).toBe("2026-01-02");
-    expect(stats.allTimeLow.value).toBe(90);
+    expect(stats.allTimeLow.value).toBe(100);
     expect(stats.allTimeLow.date).toBe("2026-01-01");
     expect(stats.lastUpdatedDate).toBe("2026-01-03");
   });

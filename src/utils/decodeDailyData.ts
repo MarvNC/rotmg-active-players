@@ -9,9 +9,7 @@ export function decodeDailyData(compact: CompactDaily): DailyPoint[] {
     return {
       date: expandDate(compactDate),
       realmeye_max: compact.a[index] ?? null,
-      realmeye_min: compact.b[index] ?? null,
       realmstock_max: compact.c[index] ?? null,
-      realmstock_min: compact.e[index] ?? null,
       launcher_loads: compact.f[index] ?? null,
     };
   });

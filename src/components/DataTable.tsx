@@ -19,9 +19,7 @@ type DataTableProps = {
 const CSV_HEADERS = [
   "date",
   "realmeye_max",
-  "realmeye_min",
   "realmstock_max",
-  "realmstock_min",
   "launcher_loads",
   "realmeye_delta",
   "realmstock_delta",
@@ -62,18 +60,8 @@ export function DataTable({ rows }: DataTableProps) {
         cell: (info) => <span className="table-number mono">{numberFormatter(info.getValue<number | null>())}</span>,
       },
       {
-        accessorKey: "realmeye_min",
-        header: "RealmEye Min",
-        cell: (info) => <span className="table-number mono">{numberFormatter(info.getValue<number | null>())}</span>,
-      },
-      {
         accessorKey: "realmstock_max",
         header: "RealmStock Max",
-        cell: (info) => <span className="table-number mono">{numberFormatter(info.getValue<number | null>())}</span>,
-      },
-      {
-        accessorKey: "realmstock_min",
-        header: "RealmStock Min",
         cell: (info) => <span className="table-number mono">{numberFormatter(info.getValue<number | null>())}</span>,
       },
       {
@@ -228,10 +216,7 @@ export function DataTable({ rows }: DataTableProps) {
         </div>
       </div>
 
-      <div
-        className="data-grid"
-        style={{ "--table-columns": "120px 136px 136px 146px 146px 138px 138px 138px 138px" } as CSSProperties}
-      >
+      <div className="data-grid" style={{ "--table-columns": "120px repeat(6, minmax(0, 1fr))" } as CSSProperties}>
         <div className="data-grid-row data-grid-header" role="row">
           {table.getFlatHeaders().map((header) => {
             const sortState = header.column.getIsSorted();
