@@ -117,32 +117,36 @@ export function SharedRangeSlider({ dates, range, onChange }: SharedRangeSliderP
   };
 
   return (
-    <section className="panel timeline-panel" aria-label="Global chart range slider">
-      <div className="timeline-header">
-        <h3>
-          <SlidersHorizontal size={14} aria-hidden="true" />
+    <section className="border border-[var(--color-surface-2)] rounded-xl bg-[var(--color-surface-1)] p-3" aria-label="Global chart range slider">
+      <div className="flex justify-between items-baseline gap-3 mb-3">
+        <h3 className="m-0 inline-flex items-center gap-2 text-[0.9rem] uppercase tracking-widest text-[var(--color-text-muted)]">
+          <SlidersHorizontal size={14} aria-hidden="true" className="text-[var(--color-brand-red)]" />
           Global Time Range
         </h3>
-        <p>
-          <CalendarDays size={14} aria-hidden="true" />
-          <span className="mono">{dates[bounds.start]}</span>
+        <p className="m-0 inline-flex gap-2 items-center text-[0.82rem] text-[var(--color-text-muted)]">
+          <CalendarDays size={14} aria-hidden="true" className="text-[var(--color-brand-red)]" />
+          <span className="tabular-nums" style={{ fontFamily: '"JetBrains Mono", monospace' }}>{dates[bounds.start]}</span>
           <span>to</span>
-          <span className="mono">{dates[bounds.end]}</span>
+          <span className="tabular-nums" style={{ fontFamily: '"JetBrains Mono", monospace' }}>{dates[bounds.end]}</span>
         </p>
       </div>
 
-      <div className="timeline-slider-wrap" ref={sliderRef}>
-        <div className="timeline-track" aria-hidden="true" />
+      <div className="relative h-[34px]" ref={sliderRef}>
+        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1.5 rounded-full bg-[var(--color-timeline-track-bg)] border border-[var(--color-timeline-track-border)]" aria-hidden="true" />
         <div
-          className="timeline-track-active"
-          style={{ left: `${bounds.startPercent}%`, width: `${bounds.endPercent - bounds.startPercent}%` }}
+          className="absolute top-1/2 -translate-y-1/2 h-1.5 rounded-full cursor-grab active:cursor-grabbing touch-none"
+          style={{ 
+            left: `${bounds.startPercent}%`, 
+            width: `${bounds.endPercent - bounds.startPercent}%`,
+            background: "linear-gradient(90deg, rgba(220, 40, 40, 0.35), rgba(220, 40, 40, 0.8))"
+          }}
           onPointerDown={onTrackPointerDown}
           aria-hidden="true"
         />
 
         <input
           type="range"
-          className="timeline-thumb"
+          className="timeline-thumb absolute inset-0 w-full m-0 pointer-events-none bg-transparent appearance-none"
           min={0}
           max={dates.length - 1}
           value={bounds.start}
@@ -152,7 +156,7 @@ export function SharedRangeSlider({ dates, range, onChange }: SharedRangeSliderP
 
         <input
           type="range"
-          className="timeline-thumb"
+          className="timeline-thumb absolute inset-0 w-full m-0 pointer-events-none bg-transparent appearance-none"
           min={0}
           max={dates.length - 1}
           value={bounds.end}

@@ -364,36 +364,36 @@ export function PlayerChart({
 
   if (data[0].length === 0) {
     return (
-      <div className="chart-shell">
-        <div className="chart-empty">No data for this source in the selected date range.</div>
+      <div className="border border-[var(--color-surface-2)] rounded-xl bg-[var(--color-surface-1)] p-2.5 animate-[card-enter_340ms_ease_both]">
+        <div className="min-h-[220px] grid place-items-center text-center text-[var(--color-text-muted)] text-[0.9rem]">No data for this source in the selected date range.</div>
       </div>
     );
   }
 
   return (
-    <div ref={chartShellRef} className="chart-shell">
+    <div ref={chartShellRef} className="border border-[var(--color-surface-2)] rounded-xl bg-[var(--color-surface-1)] p-2.5 animate-[card-enter_340ms_ease_both]">
       {(title || subtitle || shareUrl) && showTitle ? (
-        <div className="chart-heading">
-          <div className="chart-heading-grid">
-            <div className="chart-heading-side chart-heading-side-left">
+        <div className="block m-1 mb-2.5">
+          <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-start gap-3">
+            <div className="min-h-[30px] flex items-start">
               {shareUrl ? (
-                <span className="chart-share-url mono" aria-label="Share URL">
+                <span className="text-[var(--color-text-muted)] text-[0.75rem] no-underline hover:text-[var(--color-text-main)] tabular-nums" aria-label="Share URL" style={{ fontFamily: '"JetBrains Mono", monospace' }}>
                   {formatShareUrl(shareUrl)}
                 </span>
               ) : null}
             </div>
 
-            <div className="chart-heading-center">
-              {title ? <h2 className="chart-title">{title}</h2> : null}
-              {subtitle ? <p className="chart-subtitle">{subtitle}</p> : null}
+            <div className="grid gap-1 justify-items-center">
+              {title ? <h2 className="m-0 text-[1.02rem] font-bold tracking-wide text-[var(--color-text-main)] text-center">{title}</h2> : null}
+              {subtitle ? <p className="m-0 text-[var(--color-text-muted)] text-[0.82rem] leading-snug max-w-[78ch] text-center">{subtitle}</p> : null}
             </div>
 
-            <div className="chart-heading-side chart-heading-side-right">
+            <div className="min-h-[30px] flex justify-end items-start gap-2 flex-wrap">
               {headerControls}
               {enableExport ? (
                 <button
                   type="button"
-                  className="chart-popout-button"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1.5 border border-[rgba(220,40,40,0.45)] rounded bg-[var(--color-chart-button-bg)] text-[var(--color-text-main)] text-[0.76rem] font-semibold tracking-wide cursor-pointer transition-all duration-140 self-start hover:border-[rgba(220,40,40,0.8)] hover:bg-[rgba(220,40,40,0.2)]"
                   data-export-exclude="true"
                   onClick={() => {
                     void exportChartAsPng();
@@ -408,7 +408,7 @@ export function PlayerChart({
               {onPopOut ? (
                 <button
                   type="button"
-                  className="chart-popout-button"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1.5 border border-[rgba(220,40,40,0.45)] rounded bg-[var(--color-chart-button-bg)] text-[var(--color-text-main)] text-[0.76rem] font-semibold tracking-wide cursor-pointer transition-all duration-140 self-start hover:border-[rgba(220,40,40,0.8)] hover:bg-[rgba(220,40,40,0.2)]"
                   data-export-exclude="true"
                   onClick={onPopOut}
                   aria-label={`Open ${title} in modal`}
@@ -421,8 +421,11 @@ export function PlayerChart({
           </div>
         </div>
       ) : null}
-      <div className="chart-frame" style={{ height: `${frameHeight}px` }}>
-        <div ref={hostRef} className="uplot-shell" />
+      <div 
+        className="border border-[var(--color-chart-shell-border)] rounded-[10px] overflow-hidden relative pt-2.5 bg-gradient-to-b from-[var(--color-chart-frame-start)] to-[var(--color-chart-frame-end)]" 
+        style={{ height: `${frameHeight}px` }}
+      >
+        <div ref={hostRef} className="w-full h-full" />
         <div ref={tooltipRef} className="uplot-tooltip" />
       </div>
     </div>
