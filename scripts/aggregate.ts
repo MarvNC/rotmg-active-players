@@ -236,12 +236,13 @@ function aggregateLauncherLoads(rows: LauncherRow[]): Map<string, number | null>
   const msPerDay = 24 * 60 * 60 * 1000;
   let dayStartMs = dateStartUtcMs(LAUNCHER_MIN_DATE);
 
-  while (dayStartMs + msPerDay <= lastTimestampMs) {
+  while (dayStartMs <= lastTimestampMs) {
     const date = formatUtcDate(dayStartMs);
     const dayEndMs = dayStartMs + msPerDay;
+    const dayEndTargetMs = Math.min(dayEndMs, lastTimestampMs);
 
     const startViews = interpolateLauncherViewsAt(points, dayStartMs);
-    const endViews = interpolateLauncherViewsAt(points, dayEndMs);
+    const endViews = interpolateLauncherViewsAt(points, dayEndTargetMs);
 
     if (startViews == null || endViews == null) {
       dailyLoads.set(date, null);
