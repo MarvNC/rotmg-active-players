@@ -117,7 +117,10 @@ export function SharedRangeSlider({ dates, range, onChange }: SharedRangeSliderP
   };
 
   return (
-    <section className="border border-[var(--color-surface-2)] rounded-xl bg-[var(--color-surface-1)] p-3" aria-label="Global chart range slider">
+    <section
+      className="border border-[var(--color-surface-2)] rounded-xl bg-[var(--color-surface-1)] p-3"
+      aria-label="Global chart range slider"
+    >
       <div className="flex justify-between items-baseline gap-3 mb-3">
         <h3 className="m-0 inline-flex items-center gap-2 text-[0.9rem] uppercase tracking-widest text-[var(--color-text-muted)]">
           <SlidersHorizontal size={14} aria-hidden="true" className="text-[var(--color-brand-red)]" />
@@ -125,20 +128,27 @@ export function SharedRangeSlider({ dates, range, onChange }: SharedRangeSliderP
         </h3>
         <p className="m-0 inline-flex gap-2 items-center text-[0.82rem] text-[var(--color-text-muted)]">
           <CalendarDays size={14} aria-hidden="true" className="text-[var(--color-brand-red)]" />
-          <span className="tabular-nums" style={{ fontFamily: '"JetBrains Mono", monospace' }}>{dates[bounds.start]}</span>
+          <span className="tabular-nums" style={{ fontFamily: '"JetBrains Mono", monospace' }}>
+            {dates[bounds.start]}
+          </span>
           <span>to</span>
-          <span className="tabular-nums" style={{ fontFamily: '"JetBrains Mono", monospace' }}>{dates[bounds.end]}</span>
+          <span className="tabular-nums" style={{ fontFamily: '"JetBrains Mono", monospace' }}>
+            {dates[bounds.end]}
+          </span>
         </p>
       </div>
 
       <div className="relative h-[34px]" ref={sliderRef}>
-        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1.5 rounded-full bg-[var(--color-timeline-track-bg)] border border-[var(--color-timeline-track-border)]" aria-hidden="true" />
+        <div
+          className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1.5 rounded-full bg-[var(--color-timeline-track-bg)] border border-[var(--color-timeline-track-border)]"
+          aria-hidden="true"
+        />
         <div
           className="absolute top-1/2 -translate-y-1/2 h-1.5 rounded-full cursor-grab active:cursor-grabbing touch-none"
-          style={{ 
-            left: `${bounds.startPercent}%`, 
+          style={{
+            left: `${bounds.startPercent}%`,
             width: `${bounds.endPercent - bounds.startPercent}%`,
-            background: "linear-gradient(90deg, rgba(220, 40, 40, 0.35), rgba(220, 40, 40, 0.8))"
+            background: "linear-gradient(90deg, rgba(220, 40, 40, 0.35), rgba(220, 40, 40, 0.8))",
           }}
           onPointerDown={onTrackPointerDown}
           aria-hidden="true"

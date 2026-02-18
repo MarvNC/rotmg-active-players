@@ -8,7 +8,7 @@
   --color-pill-active-border: #f87171;
   --color-pill-active-shadow: rgba(220, 40, 40, 0.36);
   --color-emerald: #10b981;
-  
+
   /* Dark theme colors */
   --color-bg-dark: #0a0a0a;
   --color-bg-radial-1: rgba(220, 40, 40, 0.22);
@@ -44,12 +44,12 @@
   --color-data-grid-bg: #131313;
   --color-data-grid-scroll-track: #1c1c1c;
   --color-footer-bg: rgba(10, 10, 10, 0.4);
-  
+
   /* Fonts */
   --font-sora: "Sora", sans-serif;
   --font-russo: "Russo One", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
-  
+
   /* Border radius */
   --radius-sm: 4px;
   --radius-md: 12px;
@@ -113,7 +113,12 @@ body {
   background:
     radial-gradient(circle at 5% -20%, var(--color-bg-radial-1), transparent 35%),
     radial-gradient(circle at 95% 5%, var(--color-bg-radial-2), transparent 25%),
-    linear-gradient(150deg, var(--color-bg-gradient-start) 0%, var(--color-bg-gradient-mid) 42%, var(--color-bg-gradient-end) 100%);
+    linear-gradient(
+      150deg,
+      var(--color-bg-gradient-start) 0%,
+      var(--color-bg-gradient-mid) 42%,
+      var(--color-bg-gradient-end) 100%
+    );
 }
 
 body.modal-open {
@@ -123,7 +128,12 @@ body.modal-open {
 /* Skeleton animation */
 .skeleton {
   border-radius: 8px;
-  background: linear-gradient(90deg, var(--color-surface-1) 0%, var(--color-surface-2) 45%, var(--color-surface-1) 100%);
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-1) 0%,
+    var(--color-surface-2) 45%,
+    var(--color-surface-1) 100%
+  );
   background-size: 220% 100%;
   animation: skeleton-pulse 1.2s ease-in-out infinite;
 }

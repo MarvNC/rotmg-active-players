@@ -231,14 +231,19 @@ export default function App() {
       <header className="sticky top-0 z-50 border-b border-[var(--color-topbar-border)] bg-[var(--color-topbar-bg)] backdrop-blur-xl">
         <div className="w-[min(1280px,94vw)] mx-auto py-4 flex items-center justify-between gap-3">
           <div className="inline-flex items-center gap-3">
-            <img 
-              className="w-10 h-10 rounded-[10px] border border-[rgba(220,40,40,0.4)] shadow-[0_8px_18px_rgba(0,0,0,0.35)]" 
-              src="/image.png" 
-              width={40} 
-              height={40} 
-              alt="RotMG Player Stats logo" 
+            <img
+              className="w-10 h-10 rounded-[10px] border border-[rgba(220,40,40,0.4)] shadow-[0_8px_18px_rgba(0,0,0,0.35)]"
+              src="/image.png"
+              width={40}
+              height={40}
+              alt="RotMG Player Stats logo"
             />
-            <h1 className="m-0 font-normal text-[clamp(1.35rem,2.4vw,2rem)] tracking-wide" style={{ fontFamily: '"Russo One", sans-serif' }}>RotMG Player Stats</h1>
+            <h1
+              className="m-0 font-normal text-[clamp(1.35rem,2.4vw,2rem)] tracking-wide"
+              style={{ fontFamily: '"Russo One", sans-serif' }}
+            >
+              RotMG Player Stats
+            </h1>
           </div>
 
           <div className="inline-flex items-center gap-2">
@@ -260,7 +265,12 @@ export default function App() {
               aria-label={`Theme mode: ${themeButton.label}. Click to switch mode.`}
               title={`Theme: ${themeButton.label}`}
             >
-              <themeButton.Icon size={16} strokeWidth={2} aria-hidden="true" className="text-[var(--color-brand-red)]" />
+              <themeButton.Icon
+                size={16}
+                strokeWidth={2}
+                aria-hidden="true"
+                className="text-[var(--color-brand-red)]"
+              />
               <span>{themeButton.label}</span>
             </button>
           </div>
@@ -271,15 +281,15 @@ export default function App() {
         {isLoading ? (
           <AppSkeleton />
         ) : error != null ? (
-          <section 
-            className="border border-[var(--color-surface-2)] rounded-xl bg-[var(--color-surface-1)] p-4 grid gap-2.5 justify-items-start" 
-            role="alert" 
+          <section
+            className="border border-[var(--color-surface-2)] rounded-xl bg-[var(--color-surface-1)] p-4 grid gap-2.5 justify-items-start"
+            role="alert"
             aria-live="assertive"
           >
             <h2 className="m-0 text-[1.05rem]">Data unavailable</h2>
             <p className="m-0 text-[var(--color-text-muted)] text-[0.9rem]">{error}</p>
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="inline-flex items-center gap-1.5 px-3 py-2 border border-[var(--color-surface-2)] rounded text-[var(--color-text-main)] font-semibold cursor-pointer transition-colors duration-130 hover:bg-[var(--color-surface-2)]"
               onClick={retry}
             >
@@ -393,9 +403,9 @@ export default function App() {
             )}
 
             {expandedChart != null && expandedChartTitle != null ? (
-              <div 
-                className="fixed inset-0 z-[120] grid place-items-center p-5 bg-[var(--color-modal-backdrop)] backdrop-blur-sm" 
-                role="presentation" 
+              <div
+                className="fixed inset-0 z-[120] grid place-items-center p-5 bg-[var(--color-modal-backdrop)] backdrop-blur-sm"
+                role="presentation"
                 onClick={() => setExpandedChart(null)}
               >
                 <div
@@ -406,8 +416,8 @@ export default function App() {
                   onClick={(event) => event.stopPropagation()}
                 >
                   <div className="flex items-center justify-end gap-2.5 mb-2">
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="inline-flex items-center gap-1.5 px-3 py-2 border border-[var(--color-surface-2)] rounded text-[var(--color-text-main)] font-semibold cursor-pointer transition-colors duration-130 hover:bg-[var(--color-surface-2)]"
                       onClick={() => setExpandedChart(null)}
                     >
@@ -483,9 +493,9 @@ export default function App() {
       <footer className="text-center py-8 px-4 text-[var(--color-text-muted)] text-[0.85rem] border-t border-[var(--color-surface-2)] mt-auto bg-[var(--color-footer-bg)]">
         <p className="my-1.5">
           Built by{" "}
-          <a 
-            href={GITHUB_PROFILE_URL} 
-            target="_blank" 
+          <a
+            href={GITHUB_PROFILE_URL}
+            target="_blank"
             rel="noopener noreferrer"
             className="text-[var(--color-text-main)] no-underline transition-colors duration-130 hover:text-[var(--color-brand-red)] hover:underline"
           >

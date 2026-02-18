@@ -365,27 +365,44 @@ export function PlayerChart({
   if (data[0].length === 0) {
     return (
       <div className="border border-[var(--color-surface-2)] rounded-xl bg-[var(--color-surface-1)] p-2.5 animate-[card-enter_340ms_ease_both]">
-        <div className="min-h-[220px] grid place-items-center text-center text-[var(--color-text-muted)] text-[0.9rem]">No data for this source in the selected date range.</div>
+        <div className="min-h-[220px] grid place-items-center text-center text-[var(--color-text-muted)] text-[0.9rem]">
+          No data for this source in the selected date range.
+        </div>
       </div>
     );
   }
 
   return (
-    <div ref={chartShellRef} className="border border-[var(--color-surface-2)] rounded-xl bg-[var(--color-surface-1)] p-2.5 animate-[card-enter_340ms_ease_both]">
+    <div
+      ref={chartShellRef}
+      className="border border-[var(--color-surface-2)] rounded-xl bg-[var(--color-surface-1)] p-2.5 animate-[card-enter_340ms_ease_both]"
+    >
       {(title || subtitle || shareUrl) && showTitle ? (
         <div className="block m-1 mb-2.5">
           <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-start gap-3">
             <div className="min-h-[30px] flex items-start">
               {shareUrl ? (
-                <span className="text-[var(--color-text-muted)] text-[0.75rem] no-underline hover:text-[var(--color-text-main)] tabular-nums" aria-label="Share URL" style={{ fontFamily: '"JetBrains Mono", monospace' }}>
+                <span
+                  className="text-[var(--color-text-muted)] text-[0.75rem] no-underline hover:text-[var(--color-text-main)] tabular-nums"
+                  aria-label="Share URL"
+                  style={{ fontFamily: '"JetBrains Mono", monospace' }}
+                >
                   {formatShareUrl(shareUrl)}
                 </span>
               ) : null}
             </div>
 
             <div className="grid gap-1 justify-items-center">
-              {title ? <h2 className="m-0 text-[1.02rem] font-bold tracking-wide text-[var(--color-text-main)] text-center">{title}</h2> : null}
-              {subtitle ? <p className="m-0 text-[var(--color-text-muted)] text-[0.82rem] leading-snug max-w-[78ch] text-center">{subtitle}</p> : null}
+              {title ? (
+                <h2 className="m-0 text-[1.02rem] font-bold tracking-wide text-[var(--color-text-main)] text-center">
+                  {title}
+                </h2>
+              ) : null}
+              {subtitle ? (
+                <p className="m-0 text-[var(--color-text-muted)] text-[0.82rem] leading-snug max-w-[78ch] text-center">
+                  {subtitle}
+                </p>
+              ) : null}
             </div>
 
             <div className="min-h-[30px] flex justify-end items-start gap-2 flex-wrap">
@@ -421,8 +438,8 @@ export function PlayerChart({
           </div>
         </div>
       ) : null}
-      <div 
-        className="border border-[var(--color-chart-shell-border)] rounded-[10px] overflow-hidden relative pt-2.5 bg-gradient-to-b from-[var(--color-chart-frame-start)] to-[var(--color-chart-frame-end)]" 
+      <div
+        className="border border-[var(--color-chart-shell-border)] rounded-[10px] overflow-hidden relative pt-2.5 bg-gradient-to-b from-[var(--color-chart-frame-start)] to-[var(--color-chart-frame-end)]"
         style={{ height: `${frameHeight}px` }}
       >
         <div ref={hostRef} className="w-full h-full" />
